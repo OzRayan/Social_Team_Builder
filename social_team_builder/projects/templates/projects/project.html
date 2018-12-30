@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% load static from staticfiles %}
+{% load extra_tags %}
+
+{% block content %}
+
+<div class="circle--actions--bar">
+    <div class="bounds">
+        {% if user.is_authenticated and project.user == user %}
+        <div class="grid-100">
+            <a class="button" href="#">Edit Project</a>
+            <a class="button button-text" href="{% url 'projects:delete' project.pk %}">Delete Project</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="bounds circle--page circle--article">
+    <div class="grid-70">
+        <div class="circle--article--header">
+            <h4 class="circle--article--section">Project</h4>
+            <h1 class="circle--article--title">{{ project.title }}</h1>
+            <p class="circle--article--byline">
+                Project Owner: <a href="{% url 'accounts:profile' project.user.id %}">
+                {{ project.user.full_name }}</a>
+            </p>
+        </div>
+
+        <div class="circle--article--body">
+            <p>{{ project.description|mark_down }}</p>
+        </div>
+
+        <div class="circle--project--positions">
+        <h2>Positions</h2>
+
+        <ul class="circle--group--list">
+          <li>
+            <h3>{{ positions.name|join:", " }}</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <a class="button button-primary">Apply</a>
+          </li>
+
+
+        </ul>
+        </div>
+
+    </div>
+
+    <div class="grid-25 grid-push-5">
+      <div class="circle--secondary--module">
+        <h3>Project Needs</h3>
+        <ul class="circle--link--list">
+          <li><a>{{ positions.name|join:", " }}</a></li>
+          <!--<li><a>Designer</a></li>-->
+        </ul>
+      </div>
+
+      <div class="circle--secondary--module">
+        <h3>Project Timeline</h3>
+        <p>{{ project.time_estimate }}</p>
+      </div>
+
+      <div class="circle--secondary--module">
+        <h3>Applicant Requirements</h3>
+        <p>{{ project.requirements|safe }}</p>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Delete {{ project }}{% endblock %}
+
+  {% block content %}
+<div class="bounds circle--page circle--article">
+    <div class="grid-70">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <h4>Sure you want to delete {{ project }}?</h4>
+        <p>Deleting will definitely delete the prject!</p>
+        <div class="grid-30">
+            <button class="button button-primary" type="submit">Yes</button>
+        </div>
+        <div class="grid-30"></div>
+        <div class="grid-30">
+            <a class="button button-secondary" href="{% url 'projects:project_list' %}">No</a>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock %}

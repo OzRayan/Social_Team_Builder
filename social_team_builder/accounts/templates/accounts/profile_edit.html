@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Profile | {{ block.super }}{% endblock %}
+
+{% block media %}{{ form.media }}{% endblock %}
+
+{% block content %}
+
+<!-- PROFILE FORM -->
+<div class="bounds circle--page">
+    <form action="" method="POST" id="my_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="circle--page--header circle--fluid">
+            <div class="circle--fluid--cell circle--fluid--primary">
+                <h2>{{ page_title }}</h2>
+            </div>
+
+            <div class="circle--fluid--cell circle--fluid--secondary">
+                <input type="submit" form="my_form" value="Save profile" class="button button-primary icon-on-left">
+            </div>
+        </div>
+        <div class="grid-70">
+            <div class="d-flex justify-content-between">
+                <div class="grid-40">
+                    <label for="id_username">Username:</label>
+                    <input id="id_username" name="username" type="text" value="{{ form.username.value }}" required>
+                </div>
+                <div class="grid-40">
+                    <label for="id_email">Email:</label>
+                    <input id="id_email" name="email" type="text" value="{{ form.email.value }}" required>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <div class="grid-40">
+                    <label for="id_first_name">First name:</label>
+                    <input id="id_first_name" name="first_name" type="text" value="{{ form.first_name.value }}" required>
+                </div>
+                <div class="grid-40">
+                    <label for="id_last_name">Last name:</label>
+                    <input id="id_last_name" name="last_name" type="text" value="{{ form.last_name.value }}" required>
+                </div>
+            </div>
+
+            <div class="circle--article--body">
+                <label>{{ form.bio.label_tag }}</label>
+                {{ form.bio }}
+                <h5>This input use <strong>MarkDown</strong></h5>
+            </div>
+
+        </div>
+
+        <div class="grid-25 grid-push-5">
+
+            <!-- Avatar -->
+            <div class="circle--secondary--module">
+                <label for="id_avatar">Current avatar:</label>
+                <div class="circle--primary--avatar">
+                    {% if profile.avatar %}
+                    <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
+                    <p class="text-success">{{ form.avatar.value }}</p>
+
+                    {% else %}
+                    <img class="card-img-top" src="" alt="Card image cap">
+                    {% endif %}
+                </div>
+                <a class="button">Upload avatar
+                    <input id="id_avatar" name="avatar" type="file">
+                </a>
+            </div>
+
+            <!-- Skills -->
+            <div class="circle--secondary--module">
+                <h4>My Skills</h4>
+                {{ skill_formset.management_form }}
+                <ul class="circle--clone--list">
+                {% for skill in skill_formset %}
+
+                        <li class="skill-formset">
+                            {{ skill.id }}
+                        {{ skill.name }}
+                        <!--<a class="circle&#45;&#45;clone&#45;&#45;add">Add Skill</a>-->
+                        <!--<a class="circle&#45;&#45;clone&#45;&#45;remove">Remove</a>-->
+                        {{ skill.DELETE }}
+                        </li>
+                {% endfor %}
+                </ul>
+            </div>
+
+            <!-- My Projects -->
+            <div class="circle--secondary--module">
+                <h4>My Projects</h4>
+                {{ project_formset.management_form }}
+                {% for project in project_formset %}
+                    {{ project.id }}
+                    <ul class="circle--clone--list">
+                        <li class="project-formset">
+                        {{ project.name }}
+                        {{ project.url }}
+                        <!--<a class="circle&#45;&#45;clone&#45;&#45;add">Add Skill</a>-->
+                        <!--<a class="circle&#45;&#45;clone&#45;&#45;remove">Remove</a>-->
+                        {{ project.DELETE }}
+                        </li>
+                    </ul>
+                {% endfor %}
+            </div>
+
+        </div>
+                <!--{{ form.as_table }}-->
+            <!--<input type="submit" value="Save profile" class="button button-primary icon-on-left">-->
+    </form>
+</div>
+
+{% endblock %}
+
+{% block css %}
+    {{ form.media.css }}
+{% endblock %}
+
+{% block javascript %}
+    {% load static from staticfiles %}
+    {{ form.media.js }}
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script>
+        $('.skill-formset').formset({
+            addText: 'Add Skill',
+            deleteText: 'Remove'
+        });
+        $('.project-formset').formset({
+            addText: 'Add Project',
+            deleteText: 'Remove'
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,8 @@
+coverage==4.0.3
+Django==1.9.9
+django-braces==1.9.0
+django-debug-toolbar==1.9.1
+markdown2==2.3.6
+Pillow==5.3.0
+pytz==2018.7
+sqlparse==0.2.4

@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Project | {{ block.super }}{% endblock %}
+
+{% block media %}{{ form.media }}{% endblock %}
+
+{% block content %}
+
+  <!--<div class="circle&#45;&#45;actions&#45;&#45;bar">-->
+    <!--<div class="bounds">-->
+      <!--<div class="grid-100">-->
+        <!--<a class="button button-primary" href="project.html">Save Project</a>-->
+        <!--<a class="button button-text" href="index.html">Discard</a>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+
+
+<!-- PROJECT FORM -->
+<div class="bounds circle--page circle--article">
+    <form action="" method="POST" id="my_form" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Page Title, Save and Discard buttons -->
+        <div class="circle--page--header circle--fluid">
+            <div class="circle--fluid--cell circle--fluid--primary d-flex justify-content-between">
+                <h2>{{ page_title }}</h2>
+                <div>
+                    <input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">
+                    <a class="button button-text" href="{% url 'projects:project_list' %}">Discard</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Title - Description -->
+        <div class="grid-70">
+            <h3>Title:</h3>
+            <!--<input id="id_title" name="title" type="text" value="{{ form.title }}" required>-->
+            <!--<label for="id_title"></label>-->
+            <input id="id_title" name="title" type="text" required>
+
+            <div class="circle--article--body">
+                <label>{{ form.description.label_tag }}</label>
+                {{ form.description }}
+                <h5>This input use <strong>MarkDown</strong></h5>
+            </div>
+
+            <!-- Position Formset -->
+            <div class="circle--project--positions">
+                <h2>Positions</h2>
+
+                {{ position_formset.management_form }}
+                <ul class="circle--clone--list">
+                    {% for position in position_formset %}
+                        <li class="position-formset">
+                            {{ position.id }}
+                            {{ position.name.label_tag }}
+                            {{ position.name }}
+                            {{ position.description.label_tag }}
+                            {{ position.description }}
+                            <h5>This input use <strong>MarkDown</strong></h5>
+                    <!--<a class="circle&#45;&#45;clone&#45;&#45;add">Add Position</a>-->
+                    <!--<a class="circle&#45;&#45;clone&#45;&#45;remove">Remove</a>-->
+                            {{ position.DELETE }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">
+        </div>
+
+        <!-- Time estimate / Applicant Requirements -->
+        <div class="grid-25 grid-push-5">
+            <div class="circle--secondary--module">
+                <h3>Project Timeline</h3>
+                <label for="id_time_estimate"></label>
+                <input id="id_time_estimate" name="time_estimate" type="text" required>
+
+            </div>
+
+            <div class="circle--secondary--module">
+                <h3>Applicant Requirements</h3>
+                <label for="id_requirements"></label>
+                <input id="id_requirements" name="requirements" type="text" required>
+
+            </div>
+
+        </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block css %}
+    {{ form.media.css }}
+{% endblock %}
+
+{% block javascript %}
+    {% load static from staticfiles %}
+    {{ form.media.js }}
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script>
+        $('.position-formset').formset({
+            addText: 'Add Position',
+            deleteText: 'Remove'
+        });
+    </script>
+{% endblock %}

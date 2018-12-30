@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% load extra_tags %}
+
+{% block title %}{{ profile.user.username }} | {{ block.super }}{% endblock %}
+{% block media %}{{ form.media }}{% endblock %}
+
+{% block content %}
+
+<div class="bounds circle--page">
+    <div class="circle--page--header circle--fluid">
+        {% if user.is_authenticated and request.user == profile %}
+        <div class="circle--fluid--cell circle--fluid--primary">
+            <h1>{{ page_title }}</h1>
+        </div>
+        <div class="circle--fluid--cell circle--fluid--secondary">
+            <a class="button icon-on-left" href="{% url 'accounts:profile_edit' %}">Edit</a>
+        </div>
+        {% else %}
+        <div class="circle--fluid--cell circle--fluid--primary">
+            <h1>{{ profile }}'s Profile</h1>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="grid-70">
+
+        <!-- User
+        ---------------------------------------------------- -->
+        <div class="circle--article--body">
+            <div class="d-flex justify-content-start">
+                <h1><strong>{{ profile.full_name }}</strong></h1>
+                <a href="{% url 'accounts:password_edit' %}" class="ml-4 mt-3 pt-0">(Change Password)</a>
+            </div>
+            <i>{{ profile.email }}</i>
+            <h4>{{ profile.bio|mark_down }}</h4>
+            <p>
+
+            </p>
+
+
+        </div>
+
+        <!-- My projects
+        ---------------------------------------------------- -->
+        <h2>Past Projects</h2>
+        <table class="u-full-width circle--table">
+            <thead>
+                <tr>
+                <th>Project Title</th>
+                <th class="circle--cell--right">Project Needs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="clickable-row" data-href="project.html">
+                <td><h3>Twitter Client</h3></td>
+                <td class="circle--cell--right">
+                    <span class="secondary-label">Designer</span>
+                </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="grid-25 grid-push-5">
+
+        <!-- Avatar
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <div class="circle--secondary--module">
+            <div class="circle--primary--avatar">
+            {% if profile.avatar %}
+                <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
+            {% else %}
+                <img class="card-img-top" src="" alt="Card image cap">
+            {% endif %}
+            </div>
+        </div>
+
+        <!-- Skills
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <div class="circle--secondary--module">
+            <h4>My Skills</h4>
+            <ul class="unloaded">
+                {% if skills %}
+                    {% for skill in skills %}
+                    <li>{{ skill }}</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- My Projects
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <div class="circle--secondary--module">
+            <h4>My Projects</h4>
+            <ul class="circle--link--list">
+                {% if my_projects %}
+                    {% for project in my_projects %}
+                        <li>{{ project.name }}</li>
+                        <li><a>{{ project.url }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
