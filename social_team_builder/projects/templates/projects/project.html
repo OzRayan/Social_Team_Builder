@@ -2,6 +2,8 @@
 {% load static from staticfiles %}
 {% load extra_tags %}
 
+{% block title %}Project | {{ block.super }}{% endblock %}
+
 {% block content %}
 
 <div class="circle--actions--bar">
@@ -34,12 +36,13 @@
         <h2>Positions</h2>
 
         <ul class="circle--group--list">
-          <li>
-            <h3>{{ positions }}</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <a class="button button-primary">Apply</a>
-          </li>
-
+            {% for position in positions %}
+                <li>
+                    <h3>{{ position.name }}</h3>
+                    <p>{{ position.description|mark_down }}</p>
+                    <a class="button button-primary">Apply</a>
+                </li>
+            {% endfor %}
 
         </ul>
         </div>

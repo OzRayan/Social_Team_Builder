@@ -95,7 +95,7 @@ class SignUpView(CreateView):
             return redirect(self.success_url)
 
 
-class UserProfileView(LrM, PageTitleMixin,
+class UserProfileView(PageTitleMixin,
                       PrefetchRelatedMixin,
                       TemplateView):
     template_name = "accounts/profile.html"
@@ -210,8 +210,8 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
         obj = self.get_object()
         return f'Update {obj.username}'
 
-    def get_object(self, queryset=None):
-        return self.request.user
+    # def get_object(self, queryset=None):
+    #     return self.request.user
 
 
 # This view still needs work!!!

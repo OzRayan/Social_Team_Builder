@@ -79,6 +79,27 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
         return HttpResponseRedirect(reverse('projects:create'))
 
 
+class ProjectEditView(LrM, PageTitleMixin,
+                      UpdateView):
+    model = models.Project
+    form_class = forms.ProjectForm
+    template_name = "projects/project_edit.html"
+    context_object_name = "project"
+
+    def get(self, request, **kwargs):
+        pk = kwargs.get('pk')
+        project = models.Project.objects.get(pk=pk)
+        kwargs['project'] = project
+        return super().get(request, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        context['position_formset'] = forms.PositionInlineFormset(
+            queryset=models.Position.objects.filter(
+                project=context['project']))
+
+
 class ProjectDetailView(DetailView):
     model = models.Project
     context_object_name = "project"
