@@ -20,7 +20,8 @@ class Position(models.Model):
     description = models.TextField(default='')
     project = models.ForeignKey(Project, related_name='positions')
     time = models.CharField(max_length=30)
-    skill = models.ManyToManyField('accounts.Skill', related_name='skills')
+    skill = models.ManyToManyField('accounts.Skill',
+                                   related_name='skills')
 
     def __str__(self):
         return f'{self.name}'

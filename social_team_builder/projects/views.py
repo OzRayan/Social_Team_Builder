@@ -22,13 +22,13 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
     context_object_name = "projects"
     prefetch_related = ['positions']
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(ProjectListView, self).get_context_data(**kwargs)
-    #     # noinspection PyUnresolvedReferences
-    #     # context['position'] = models.Position.objects.filter(
-    #     #     project__in=context['projects'])
-    #
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super(ProjectListView, self).get_context_data(**kwargs)
+        # noinspection PyUnresolvedReferences
+        context['position'] = models.Position.objects.filter(
+            project__in=context['projects'])
+        # print(dir(context['projects']))
+        return context
 
 
 class ProjectCreateView(LrM, PageTitleMixin, CreateView):
@@ -43,8 +43,7 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
         context['form'] = self.get_form()
         # noinspection PyUnresolvedReferences
         context['position_formset'] = forms.PositionInlineFormset(
-            queryset=models.Position.objects.none(),
-            prefix='position_formset')
+            queryset=models.Position.objects.none())
         return context
 
     def post(self, request, *args, **kwargs):
@@ -52,8 +51,7 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
         # noinspection PyUnresolvedReferences
         position_formset = forms.PositionInlineFormset(
             self.request.POST,
-            queryset=models.Position.objects.none(),
-            prefix='position_formset')
+            queryset=models.Position.objects.none())
 
         if form.is_valid() and position_formset.is_valid():
             project = form.save(commit=False)
@@ -67,7 +65,10 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
             for position in positions:
                 name = position.name
                 if name:
-                    models.Position(project=project).save()
+                    models.Position(
+                        project=project,
+                        name=name,
+                        description=position.description).save()
 
             messages.success(request, 'Project created successfully!')
 

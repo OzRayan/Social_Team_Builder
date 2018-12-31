@@ -49,21 +49,13 @@
                 {% for project in projects %}
                 <tr class="clickable-row" data-href="{% url 'projects:detail' project.id %}">
                         <td><h3>{{ project }}</h3></td>
-                    {% if position.count == 1 %}
+
                     <td class="circle--cell--right">
-                        <span class="secondary-label">{{ position }}</span>
+                        <!--{% for pos in position %}-->
+                        <span class="secondary-label">{{ project }}</span>
+                        <!--{% endfor %}-->
                     </td>
-                    {% elif position.count >= 1 %}
-                        {% for pos in position %}
-                            <td class="circle--cell--right">
-                                <span class="secondary-label">{{ pos }}</span>
-                            </td>
-                        {% endfor %}
-                    {% else %}
-                        <td class="circle--cell--right">
-                            <span class="secondary-label">N/A</span>
-                        </td>
-                    {% endif %}
+
                 </tr>
                 {% endfor %}
 

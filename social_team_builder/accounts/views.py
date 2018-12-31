@@ -101,7 +101,7 @@ class UserProfileView(LrM, PageTitleMixin,
     template_name = "accounts/profile.html"
     model = get_user_model()
     context_object_name = "profile"
-    prefetch_related = ['my_projects', 'profile_skill']
+    prefetch_related = ['my_projects', 'profile_skills']
 
     def get(self, request, **kwargs):
         pk = kwargs.get('pk')
@@ -111,7 +111,7 @@ class UserProfileView(LrM, PageTitleMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['skills'] = context['profile'].skills.all()
+        context['skills'] = context['profile'].profile_skills.all()
         context['my_projects'] = context['profile'].my_projects.all()
         return context
 

@@ -9,13 +9,6 @@ from django.db import models
 from django.utils import timezone
 
 
-class Skill(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-
 class UserManager(BaseUserManager):
     def create_user(self, email, username=None, password=None):
         if not email:
@@ -52,7 +45,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=50)
     bio = models.TextField(default='')
     avatar = models.ImageField(upload_to='./user_avatar', blank=True)
-    skill = models.ManyToManyField(Skill, related_name='profile_skill')
 
     date_joined = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=False)
@@ -79,6 +71,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
+
+
+class Skill(models.Model):
+    user = models.ForeignKey(User, related_name="profile_skills")
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class MyProject(models.Model):

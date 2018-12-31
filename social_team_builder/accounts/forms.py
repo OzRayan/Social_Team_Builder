@@ -57,8 +57,7 @@ class UserProfileForm(forms.ModelForm):
                   'last_name',
                   'email',
                   'bio',
-                  'avatar',
-                  'skill']
+                  'avatar']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
