@@ -15,7 +15,7 @@ from . import models
 from .mixin import PageTitleMixin
 
 
-# Still needs a lot of work
+# Still needs a lot of work #######
 class ProjectListView(PrefetchRelatedMixin, ListView):
     template_name = "projects/project_list.html"
     model = models.Project
