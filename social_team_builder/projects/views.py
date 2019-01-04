@@ -81,23 +81,81 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
 
 class ProjectEditView(LrM, PageTitleMixin,
                       UpdateView):
-    model = models.Project
+    # model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_edit.html"
     context_object_name = "project"
+    page_title = "Update project"
 
     def get(self, request, **kwargs):
-        pk = kwargs.get('pk')
-        project = models.Project.objects.get(pk=pk)
+        # pk = kwargs.get('pk')
+        # noinspection PyUnresolvedReferences
+        project = self.get_object()
         kwargs['project'] = project
+        # project = self.get_object()
+        # form = forms.ProjectForm(
+        #     self.request.POST, request.FILES, instance=project)
+        # print(project)
+        # print(form.instance)
         return super().get(request, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
+        # noinspection PyUnresolvedReferences
         context['position_formset'] = forms.PositionInlineFormset(
             queryset=models.Position.objects.filter(
                 project=context['project']))
+
+    def post(self, request, *args, **kwargs):
+        project = self.get_object()
+        form = forms.ProjectForm(
+            self.request.POST, request.FILES, instance=project)
+
+
+        # noinspection PyUnresolvedReferences
+        position_formset = forms.PositionInlineFormset(
+            request.POST,
+            queryset=models.Position.objects.filter(
+                project=project))
+
+        if form.is_valid() and position_formset.is_valid():
+            project = form.save(commit=False)
+            project.user = request.user
+            project.save()
+
+            positions = position_formset.save(commit=False)
+            for to_delete in position_formset.deleted_objects:
+                to_delete.delete()
+
+            for position in positions:
+                name = position.name
+                if name:
+                    models.Position(
+                        project=project,
+                        name=name,
+                        description=position.description).save()
+
+            messages.success(request, 'Project updated successfully!')
+
+            return HttpResponseRedirect(self.success_url)
+        else:
+            messages.error(request, 'Something went wrong')
+
+        # return HttpResponseRedirect(reverse('projects:edit'))
+        return redirect(reverse('accounts:profile_edit',
+                                {'form': form,
+                                 'position_formset': position_formset}))
+
+    # def get_page_title(self):
+    #     obj = self.get_object()
+    #     # print(obj.title)
+    #     return f"Update {obj.title}"
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        project = get_object_or_404(models.Project, pk=pk)
+        return project
 
 
 class ProjectDetailView(DetailView):

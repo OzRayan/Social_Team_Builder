@@ -207,11 +207,11 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
                                  'project_formset': project_formset}))
 
     def get_page_title(self):
-        obj = self.get_object()
-        return f'Update {obj.username}'
+        # obj = self.model
+        return f'Update {self.get_object().username}'
 
-    # def get_object(self, queryset=None):
-    #     return self.request.user
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 # This view still needs work!!!

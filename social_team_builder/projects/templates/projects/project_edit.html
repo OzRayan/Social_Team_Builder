@@ -2,31 +2,52 @@
 
 {% block title %}Edit Project | {{ block.super }}{% endblock %}
 
-  <!--<div class="circle&#45;&#45;actions&#45;&#45;bar">-->
-    <!--<div class="bounds">-->
-      <!--<div class="grid-100">-->
-        <!--<a class="button button-primary" href="project.html">Save Changes</a>-->
-        <!--<a class="button button-text" href="index.html">Delete Project</a>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
+{% block media %}{{ form.media }}{% endblock %}
+
 
 {% block content %}
 
-  <div class="bounds circle--page circle--article">
+    <!-- Nav bar -->
+    <div class="circle--actions--bar">
+        <div class="bounds">
+            <div class="grid-100">
+                <input type="submit" form="my_form" value="Save changes" class="button button-primary icon-on-left">
+                <a class="button button-text" href="index.html">Delete {{ page_title }} Project</a>
+            </div>
+        </div>
+    </div>
+
+<div class="bounds circle--page circle--article">
+
+
+    <form action="" method="POST" id="my_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!--{{ form.as_table }}-->
+
+        <div class="circle--page--header circle--fluid">
+            <div class="circle--fluid--cell circle--fluid--primary">
+                <h2>{{ page_title }}</h2>
+            </div>
+
+            <div class="circle--fluid--cell circle--fluid--secondary">
+                <input type="submit" form="my_form" value="Save changes" class="button button-primary icon-on-left">
+            </div>
+        </div>
 
     <div class="grid-70">
-      <div class="circle--article--body">
-        <input type="text" class="circle--input--h1" placeholder="Project Title" value="Currency Calculator" />
-        <textarea placeholder="Project description...">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            <h3>Title:</h3>
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
-      </div>
+            <input id="id_title" name="title" type="text" value="{{ form.title.value }}" required>
+
+            <div class="circle--article--body">
+                <label>{{ form.description.label_tag }}</label>
+                {{ form.description }}
+                <h5>This input use <strong>MarkDown</strong></h5>
+            </div>
 
       <div class="circle--project--positions">
-        <h2>Positions</h2>
+        <h2>{{ page_title }}</h2>
 
         <ul class="circle--group--list circle--clone--list">
           <li>
@@ -60,6 +81,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
         <textarea>Applicants are required to work from our headquarters located in Antarctica.</textarea>
       </div>
 
-    </div>
-  </div>
+        </div>
+    </form>
+</div>
 {% endblock %}
