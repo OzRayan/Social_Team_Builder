@@ -1,9 +1,6 @@
 from django import forms
 from . import models
 
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
-
 
 class ProjectForm(forms.ModelForm):
     description = forms.Textarea(attrs={"cols": 28, "rows": 6})
@@ -17,15 +14,13 @@ class ProjectForm(forms.ModelForm):
             'requirements']
 
 
-class BaseForm(forms.ModelForm):
+class PositionForm(forms.ModelForm):
+    description = forms.Textarea(attrs={'cols': 28, 'rows': 6})
+
     class Media:
         css = {'all': ('css/order.css',)}
         js = ('js/jquery.fn.sortable.min.js',
               'js/order.js')
-
-
-class PositionForm(BaseForm):
-    description = forms.Textarea(attrs={'cols': 28,'rows': 6})
 
     class Meta:
         model = models.Position

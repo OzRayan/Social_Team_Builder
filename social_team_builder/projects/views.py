@@ -50,7 +50,7 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
         form = forms.ProjectForm(request.POST)
         # noinspection PyUnresolvedReferences
         position_formset = forms.PositionInlineFormset(
-            self.request.POST,
+            request.POST,
             queryset=models.Position.objects.none())
 
         if form.is_valid() and position_formset.is_valid():
@@ -110,7 +110,7 @@ class ProjectEditView(LrM, PageTitleMixin,
     def post(self, request, *args, **kwargs):
         project = self.get_object()
         form = forms.ProjectForm(
-            self.request.POST, request.FILES, instance=project)
+            request.POST, request.FILES, instance=self.request.user)
 
 
         # noinspection PyUnresolvedReferences

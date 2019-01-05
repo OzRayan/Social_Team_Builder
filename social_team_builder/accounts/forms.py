@@ -1,6 +1,5 @@
 import re
 from django import forms
-from django.core.validators import EmailValidator
 from . import models
 from . import validation as vd
 

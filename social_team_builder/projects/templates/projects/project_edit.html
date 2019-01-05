@@ -12,7 +12,7 @@
         <div class="bounds">
             <div class="grid-100">
                 <input type="submit" form="my_form" value="Save changes" class="button button-primary icon-on-left">
-                <a class="button button-text" href="index.html">Delete {{ page_title }} Project</a>
+                <a class="button button-text" href="{% url 'projects:delete' project.pk %}">Delete Project</a>
             </div>
         </div>
     </div>
