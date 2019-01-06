@@ -93,10 +93,11 @@ class ProjectEditView(LrM, PageTitleMixin,
         project = self.get_object()
         kwargs['project'] = project
         # project = self.get_object()
-        # form = forms.ProjectForm(
-        #     self.request.POST, request.FILES, instance=project)
-        # print(project)
-        # print(form.instance)
+        form = forms.ProjectForm(
+            request.POST, instance=request.user)
+        print(project)
+        print(form.instance)
+        print(request.user)
         return super().get(request, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -143,7 +144,7 @@ class ProjectEditView(LrM, PageTitleMixin,
             messages.error(request, 'Something went wrong')
 
         # return HttpResponseRedirect(reverse('projects:edit'))
-        return redirect(reverse('accounts:profile_edit',
+        return HttpResponseRedirect(reverse('accounts:profile_edit',
                                 {'form': form,
                                  'position_formset': position_formset}))
 

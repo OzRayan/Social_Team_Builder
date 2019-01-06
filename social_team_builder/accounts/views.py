@@ -23,9 +23,19 @@ from .mixins import PageTitleMixin
 
 
 class ValidateView(RedirectView):
+    """Validate View - for user activation
+    'validate/(?P<uid>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$'
+
+    :inherit: - generic.RedirectView
+    :methods: - get()
+    :argument: - url"""
     url = reverse_lazy("accounts:profile_edit")
 
     def get(self, request, *args, **kwargs):
+        """get method - 
+        :args: - request
+               - *args
+               - **kwargs"""
         pk = kwargs['uid']
         token = kwargs['token']
         try:
