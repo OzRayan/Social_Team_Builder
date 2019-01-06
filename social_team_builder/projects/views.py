@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.contrib.auth import (get_user_model)
 from django.contrib.auth.mixins import LoginRequiredMixin as LrM
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -7,7 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (CreateView, DetailView, DeleteView,
                                   ListView, TemplateView, UpdateView)
-
+from notify.signals import notify
 from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
 
 from . import forms
@@ -34,7 +33,6 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
 class ProjectCreateView(LrM, PageTitleMixin, CreateView):
     model = models.Project
     form_class = forms.ProjectForm
-    success_url = reverse_lazy("projects:project_list")
     template_name = "projects/project_new.html"
     page_title = "Create project"
 
@@ -63,16 +61,13 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
                 to_delete.delete()
 
             for position in positions:
-                name = position.name
-                if name:
-                    models.Position(
-                        project=project,
-                        name=name,
-                        description=position.description).save()
-
+                position.project = project
+                position.save()
+            position_formset.save_m2m()
             messages.success(request, 'Project created successfully!')
 
-            return HttpResponseRedirect(self.success_url)
+            return HttpResponseRedirect(reverse_lazy("projects:detail",
+                                                     kwargs={'pk': project.id}))
         else:
             messages.error(request, 'Something went wrong')
 
@@ -84,35 +79,30 @@ class ProjectEditView(LrM, PageTitleMixin,
     # model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_edit.html"
-    context_object_name = "project"
-    page_title = "Update project"
+    # context_object_name = "project"
+    success_url = reverse_lazy('projects:project_list')
 
-    def get(self, request, **kwargs):
-        # pk = kwargs.get('pk')
-        # noinspection PyUnresolvedReferences
-        project = self.get_object()
-        kwargs['project'] = project
-        # project = self.get_object()
-        form = forms.ProjectForm(
-            request.POST, instance=request.user)
-        print(project)
-        print(form.instance)
-        print(request.user)
-        return super().get(request, **kwargs)
+    def get_page_title(self):
+        return f"Update {self.object}"
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        project = get_object_or_404(models.Project, pk=pk)
+        return project
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ProjectEditView, self).get_context_data(**kwargs)
         context['form'] = self.get_form()
         # noinspection PyUnresolvedReferences
         context['position_formset'] = forms.PositionInlineFormset(
             queryset=models.Position.objects.filter(
                 project=context['project']))
+        return context
 
     def post(self, request, *args, **kwargs):
         project = self.get_object()
         form = forms.ProjectForm(
-            request.POST, request.FILES, instance=self.request.user)
-
+            request.POST, request.FILES, instance=project)
 
         # noinspection PyUnresolvedReferences
         position_formset = forms.PositionInlineFormset(
@@ -122,7 +112,7 @@ class ProjectEditView(LrM, PageTitleMixin,
 
         if form.is_valid() and position_formset.is_valid():
             project = form.save(commit=False)
-            project.user = request.user
+            # project.user = request.user
             project.save()
 
             positions = position_formset.save(commit=False)
@@ -130,33 +120,18 @@ class ProjectEditView(LrM, PageTitleMixin,
                 to_delete.delete()
 
             for position in positions:
-                name = position.name
-                if name:
-                    models.Position(
-                        project=project,
-                        name=name,
-                        description=position.description).save()
-
+                position.project = project
+                position.save()
+            position_formset.save_m2m()
             messages.success(request, 'Project updated successfully!')
 
-            return HttpResponseRedirect(self.success_url)
+            return HttpResponseRedirect(reverse_lazy("projects:detail",
+                                                     kwargs={'pk': project.id}))
         else:
             messages.error(request, 'Something went wrong')
 
         # return HttpResponseRedirect(reverse('projects:edit'))
-        return HttpResponseRedirect(reverse('accounts:profile_edit',
-                                {'form': form,
-                                 'position_formset': position_formset}))
-
-    # def get_page_title(self):
-    #     obj = self.get_object()
-    #     # print(obj.title)
-    #     return f"Update {obj.title}"
-
-    def get_object(self, queryset=None):
-        pk = self.kwargs.get('pk')
-        project = get_object_or_404(models.Project, pk=pk)
-        return project
+        return HttpResponseRedirect(reverse('accounts:profile_edit'))
 
 
 class ProjectDetailView(DetailView):
@@ -167,7 +142,6 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
-        # context['profile'] = context['project'].user
         # noinspection PyUnresolvedReferences
         context['positions'] = models.Position.objects.filter(
             project=context['project'])
@@ -187,3 +161,7 @@ class ProjectDeleteView(LrM, DeleteView):
         if project.user != self.request.user:
             raise Http404('You are not allowed to delete!')
         return project
+
+
+class ApplyView(LrM, PageTitleMixin, TemplateView):
+    pass

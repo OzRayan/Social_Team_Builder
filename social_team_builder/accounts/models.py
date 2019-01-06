@@ -123,7 +123,7 @@ class UserApplication(models.Model):
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   on_delete=models.CASCADE,
                                   related_name='application')
-    position = models.ForeignKey('projects.Position', related_name='applications')
+    position = models.ForeignKey('projects.Position', related_name='apply')
     project = models.ForeignKey('projects.Project')
     status = models.NullBooleanField(default=None)
 

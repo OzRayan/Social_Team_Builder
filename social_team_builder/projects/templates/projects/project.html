@@ -10,7 +10,7 @@
     <div class="bounds">
         {% if user.is_authenticated and project.user == user %}
         <div class="grid-100">
-            <a class="button" href="{% url 'projects:edit' project.id %}">Edit Project</a>
+            <a class="button" href="{% url 'projects:edit' project.pk %}">Edit Project</a>
             <a class="button button-text" href="{% url 'projects:delete' project.pk %}">Delete Project</a>
         </div>
         {% endif %}

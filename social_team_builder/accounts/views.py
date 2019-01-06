@@ -134,15 +134,16 @@ class UserProfileView(PageTitleMixin,
 
 
 class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
-    model = get_user_model()
+    # model = get_user_model()
     form_class = forms.UserProfileForm
     template_name = "accounts/profile_edit.html"
     context_object_name = "profile"
 
-    def get(self, request, **kwargs):
-        profile = self.request.user
-        kwargs['profile'] = profile
-        return super().get(request, **kwargs)
+    def get_page_title(self):
+        return f'Update {self.object}'
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -215,13 +216,6 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
                                 {'form': form,
                                  'skill_formset': skill_formset,
                                  'project_formset': project_formset}))
-
-    def get_page_title(self):
-        # obj = self.model
-        return f'Update {self.get_object().username}'
-
-    def get_object(self, queryset=None):
-        return self.request.user
 
 
 # This view still needs work!!!

@@ -51,6 +51,7 @@ class UserCreateForm(UserCreationForm):
 class UserProfileForm(forms.ModelForm):
     """User Profile form
     :inherit: - forms.ModelForm class"""
+
     bio = forms.Textarea(attrs={"cols": 28, "rows": 8})
 
     class Meta:
@@ -70,6 +71,7 @@ class UserProfileForm(forms.ModelForm):
 class BaseForm(forms.ModelForm):
     """Base form - for SkillForm and ProjectForm(own_projects)
     :inherit: - form.ModelForm class"""
+
     class Media:
         css = {'all': ('css/order.css',)}
         js = ('js/jquery.fn.sortable.min.js',
@@ -79,6 +81,7 @@ class BaseForm(forms.ModelForm):
 class SkillForm(BaseForm):
     """Skill form
     :inherit: - BaseForm class"""
+
     class Meta:
         model = models.Skill
         fields = ['name', ]
@@ -91,6 +94,7 @@ class SkillForm(BaseForm):
 class ProjectForm(BaseForm):
     """Project form - own project list with url field
     :inherit: - BaseForm class"""
+
     class Meta:
         model = models.MyProject
         fields = ['name', 'url']
