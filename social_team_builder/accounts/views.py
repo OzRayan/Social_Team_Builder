@@ -24,7 +24,9 @@ from .mixins import PageTitleMixin
 
 class ValidateView(RedirectView):
     """Validate View - for user activation
-    'validate/(?P<uid>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$'
+    :url:
+    ^accounts/validate/(?P<uid>[0-9A-Za-z_\-]+)/
+    (?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$
 
     :inherit: - generic.RedirectView
     :methods: - get()
@@ -32,10 +34,11 @@ class ValidateView(RedirectView):
     url = reverse_lazy("accounts:profile_edit")
 
     def get(self, request, *args, **kwargs):
-        """get method - 
-        :args: - request
-               - *args
-               - **kwargs"""
+        """get method - use default_token_generator to verify user and token,
+                    if pass user.is_active is set to True
+        :param:: - request
+                 - *args
+                 - **kwargs"""
         pk = kwargs['uid']
         token = kwargs['token']
         try:
@@ -45,6 +48,7 @@ class ValidateView(RedirectView):
             user = None
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
+            # In order to login() to work
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.save()
             login(request, user)
@@ -56,6 +60,14 @@ class ValidateView(RedirectView):
 
 
 class SignInView(FormView):
+    """Sign in view
+    :url:
+    ^accounts/signin/$
+
+    :inherit: - generic.FormView
+    :methods: - get_form()
+              - form_valid()
+    """
     form_class = AuthenticationForm
     success_url = reverse_lazy("projects:project_list")
     template_name = "accounts/signin.html"
@@ -73,25 +85,39 @@ class SignInView(FormView):
 
 
 class SignOutView(LrM, RedirectView):
+    """Sign out view
+    :url:
+    ^accounts/signout/$
+
+    :inherit: - (LrM) mixins.LoginRequiredMixin
+              - generic.RedirectView
+    :methods: - get()"""
     url = reverse_lazy("projects:project_list")
 
     def get(self, request, *args, **kwargs):
         logout(request)
-        messages.success(request, "You've been signed out. Come back soon!")
+        messages.info(request, "You've been signed out. Come back soon!")
         return super().get(request, *args, **kwargs)
 
 
 class SignUpView(CreateView):
+    """Sign up view
+    :url:
+    ^accounts/signup/$
+
+    :inherit: - generic.CreateView
+    :methods: - form_valid()"""
     form_class = forms.UserCreateForm
     success_url = reverse_lazy("projects:project_list")
     template_name = "accounts/signup.html"
     context_object_name = "form"
 
     def form_valid(self, form):
+        """form_valid method - sends a verification email for user activation
+        using EmailMessage. Token is generated with default_token_generator"""
         if form.is_valid():
             user = form.save()
             email_to = form.cleaned_data.get('email')
-
             site = get_current_site(self.request)
             message = render_to_string('accounts/check_email.html', {
                 'user': user,
@@ -108,10 +134,25 @@ class SignUpView(CreateView):
 class UserProfileView(PageTitleMixin,
                       PrefetchRelatedMixin,
                       TemplateView):
+    """User profile view
+    :url:
+    ^accounts/profile/(?P<pk>\d+)/$
+
+    :inherit: - PageTitleMixin (custom mixin)
+              - generic.TemplateView
+    :methods: - get_page_title()
+              - get_context_data()"""
     template_name = "accounts/profile.html"
     model = get_user_model()
     context_object_name = "profile"
     prefetch_related = ['my_projects', 'profile_skills']
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_page_title(self):
+        obj = self.get_object()
+        return f"{obj}'s Profile"
 
     def get(self, request, **kwargs):
         pk = kwargs.get('pk')
@@ -125,15 +166,20 @@ class UserProfileView(PageTitleMixin,
         context['my_projects'] = context['profile'].my_projects.all()
         return context
 
-    def get_object(self, queryset=None):
-        return self.request.user
-
-    def get_page_title(self):
-        obj = self.get_object()
-        return f"{obj}'s Profile"
-
 
 class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
+    """User profile edit view
+    :url:
+    ^accounts/profile/edit/$
+
+    :inherit: - (LrM) LoginRequiredMixin
+              - PageTitleMixin (custom mixin)
+              - generic.UpdateView
+    :methods: - get_page_title()
+              - get_object()
+              - get_context_data()
+              - post()
+    """
     # model = get_user_model()
     form_class = forms.UserProfileForm
     template_name = "accounts/profile_edit.html"
