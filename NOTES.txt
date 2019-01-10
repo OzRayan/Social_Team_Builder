@@ -1,4 +1,4 @@
-REQUIRED!   [14.36 from 32] - [52.21%]
+REQUIRED!   [14.36 from 32] - [52.21%] [ready at: 96.875%]
 
 1. [x] - Can register for an account
     1. {4/5} - Complete profile during or immediately after sign up
