@@ -146,19 +146,21 @@ class UserProfileView(PageTitleMixin,
     model = get_user_model()
     context_object_name = "profile"
     prefetch_related = ['my_projects', 'profile_skills']
+    #
+    # def get_object(self, queryset=None):
+    #     return self.request.user
 
-    def get_object(self, queryset=None):
-        return self.request.user
-
-    def get_page_title(self):
-        obj = self.get_object()
-        return f"{obj}'s Profile"
 
     def get(self, request, **kwargs):
         pk = kwargs.get('pk')
-        profile = get_object_or_404(models.User, pk=pk)
+        profile = models.User.objects.get(pk=pk)
         kwargs['profile'] = profile
         return super().get(request, **kwargs)
+    #
+    #
+    # def get_page_title(self):
+    #     # obj = self.get_object()
+    #     return f"{self.get_object()}'s Profile"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -180,7 +182,7 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
               - get_context_data()
               - post()
     """
-    # model = get_user_model()
+    model = get_user_model()
     form_class = forms.UserProfileForm
     template_name = "accounts/profile_edit.html"
     context_object_name = "profile"

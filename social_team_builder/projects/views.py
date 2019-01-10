@@ -2,7 +2,10 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin as LrM
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Q
+
 from django.http import HttpResponseRedirect, HttpResponse, Http404
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (CreateView, DetailView, DeleteView,
                                   ListView, TemplateView, UpdateView)
@@ -24,10 +27,20 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
-        context['position'] = models.Position.objects.filter(
+        context['positions'] = models.Position.objects.filter(
             project__in=context['projects'])
-        # print(dir(context['projects']))
+        context['filter'] = self.request.GET.get('position')
         return context
+
+    def get_queryset(self):
+        # noinspection PyUnresolvedReferences
+        queryset = super().get_queryset()
+        term = self.request.GET.get('q')
+
+        if term:
+            queryset = queryset.filter(Q(title__icontains=term) |
+                                       Q(description__icontains=term))
+        return queryset
 
 
 class ProjectCreateView(LrM, PageTitleMixin, CreateView):
@@ -79,7 +92,7 @@ class ProjectEditView(LrM, PageTitleMixin,
     # model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_edit.html"
-    # context_object_name = "project"
+    context_object_name = "project"
     success_url = reverse_lazy('projects:project_list')
 
     def get_page_title(self):
@@ -97,6 +110,7 @@ class ProjectEditView(LrM, PageTitleMixin,
         context['position_formset'] = forms.PositionInlineFormset(
             queryset=models.Position.objects.filter(
                 project=context['project']))
+        print(dir(context['position_formset']))
         return context
 
     def post(self, request, *args, **kwargs):

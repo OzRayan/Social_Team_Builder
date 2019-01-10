@@ -10,7 +10,7 @@
     <div class="circle--page--header circle--fluid">
         {% if user.is_authenticated and request.user == profile %}
         <div class="circle--fluid--cell circle--fluid--primary">
-            <h1>{{ page_title }}</h1>
+                <h1>{{ profile }}'s Profile</h1>
         </div>
         <div class="circle--fluid--cell circle--fluid--secondary">
             <a class="button icon-on-left" href="{% url 'accounts:profile_edit' %}">Edit</a>
