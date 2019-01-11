@@ -141,7 +141,8 @@ class UserProfileView(PageTitleMixin,
     :inherit: - PageTitleMixin (custom mixin)
               - generic.TemplateView
     :methods: - get_page_title()
-              - get_context_data()"""
+              - get_context_data()
+    """
     template_name = "accounts/profile.html"
     model = get_user_model()
     context_object_name = "profile"

@@ -93,7 +93,8 @@ class Skill(models.Model):
     """Skill model
     :inherit: - models.Model
     :fields: - user, name
-    :methods: - __str__()"""
+    :methods: - __str__()
+    """
     user = models.ForeignKey(User, related_name="profile_skills")
     name = models.CharField(max_length=50)
 
@@ -105,7 +106,8 @@ class MyProject(models.Model):
     """Own project model
     :inherit: - models.Model
     :fields: - user, name, url
-    :methods: - __str__()"""
+    :methods: - __str__()
+    """
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='my_projects',
                              on_delete=models.CASCADE)
@@ -119,11 +121,11 @@ class MyProject(models.Model):
 class UserApplication(models.Model):
     """User Application model
     :inherit: - models.Model
-    :fields: - applicant, position, project, status"""
+    :fields: - applicant, position, project, status
+    """
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   on_delete=models.CASCADE,
                                   related_name='application')
     position = models.ForeignKey('projects.Position', related_name='apply')
     project = models.ForeignKey('projects.Project')
     status = models.NullBooleanField(default=None)
-

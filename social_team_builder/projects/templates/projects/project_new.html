@@ -6,14 +6,21 @@
 
 {% block content %}
 
-  <!--<div class="circle&#45;&#45;actions&#45;&#45;bar">-->
-    <!--<div class="bounds">-->
-      <!--<div class="grid-100">-->
-        <!--<a class="button button-primary" href="project.html">Save Project</a>-->
-        <!--<a class="button button-text" href="index.html">Discard</a>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
+  <div class="circle--actions--bar">
+    <div class="bounds">
+      <div class="grid-100">
+          <div class="circle--fluid--cell circle--fluid--primary d-flex justify-content-between">
+              <h2>{{ page_title }}</h2>
+              <div class="d-flex justify-content-end">
+                  <input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">
+                  <a class="button button-text" href="{% url 'projects:project_list' %}">Discard</a>
+              </div>
+          </div>
+
+
+      </div>
+    </div>
+  </div>
 
 
 <!-- PROJECT FORM -->
@@ -22,15 +29,15 @@
         {% csrf_token %}
 
         <!-- Page Title, Save and Discard buttons -->
-        <div class="circle--page--header circle--fluid">
-            <div class="circle--fluid--cell circle--fluid--primary d-flex justify-content-between">
-                <h2>{{ page_title }}</h2>
-                <div>
-                    <input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">
-                    <a class="button button-text" href="{% url 'projects:project_list' %}">Discard</a>
-                </div>
-            </div>
-        </div>
+        <!--<div class="circle&#45;&#45;page&#45;&#45;header circle&#45;&#45;fluid">-->
+            <!--<div class="circle&#45;&#45;fluid&#45;&#45;cell circle&#45;&#45;fluid&#45;&#45;primary d-flex justify-content-between">-->
+                <!--<h2>{{ page_title }}</h2>-->
+                <!--<div>-->
+                    <!--<input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">-->
+                    <!--<a class="button button-text" href="{% url 'projects:project_list' %}">Discard</a>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
         <!-- Project Title - Description -->
         <div class="grid-70">

@@ -1,4 +1,10 @@
 class PageTitleMixin:
+    """Page title mixin class
+    - for class based views
+    :argument: -page_title
+    :methods: - get_page_title()
+              - get_context_data()
+    """
     page_title = ''
 
     def get_page_title(self):

@@ -17,8 +17,16 @@ from . import models
 from .mixin import PageTitleMixin
 
 
-# Still needs a lot of work ##########
 class ProjectListView(PrefetchRelatedMixin, ListView):
+    """Projects list view
+    :url:
+    ^$
+
+    :inherit: - PageTitleMixin (custom mixin)
+              - generic.ListView
+    :methods: - get_context_data()
+              - get_queryset()
+    """
     template_name = "projects/project_list.html"
     model = models.Project
     context_object_name = "projects"
@@ -44,6 +52,16 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
 
 
 class ProjectCreateView(LrM, PageTitleMixin, CreateView):
+    """Project list view
+    :url:
+    project/new/$
+
+    :inherit: - (LrM) loginRequiredMixin
+              - PageTitleMixin (custom mixin)
+              - generic.CreateView
+    :methods: - get_context_data()
+              - post()
+    """
     model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_new.html"
@@ -89,6 +107,18 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
 
 class ProjectEditView(LrM, PageTitleMixin,
                       UpdateView):
+    """Project Edit view
+    :url:
+    project/(?P<pk>\d+)/edit/$
+
+    :inherit: - (LrM) loginRequiredMixin
+              - PageTitleMixin (custom mixin)
+              - generic.UpdateView
+    :methods: - get_page_title()
+              - get_object()
+              - get_context_data()
+              - post()
+    """
     # model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_edit.html"
@@ -149,6 +179,13 @@ class ProjectEditView(LrM, PageTitleMixin,
 
 
 class ProjectDetailView(DetailView):
+    """Project Detail view
+    :url:
+    project/(?P<pk>\d+)/$
+
+    :inherit: - generic.DetailView
+    :methods: - get_context_data()
+    """
     model = models.Project
     context_object_name = "project"
     template_name = "projects/project.html"
@@ -163,6 +200,14 @@ class ProjectDetailView(DetailView):
 
 
 class ProjectDeleteView(LrM, DeleteView):
+    """Project delete view
+    :url:
+    project/(?P<pk>\d+)/delete/$
+
+    :inherit: - (LrM) loginRequiredMixin
+              - generic.DeleteView
+    :methods: - get_object()
+    """
     model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_delete.html"

@@ -3,6 +3,11 @@ from django.db import models
 
 
 class Project(models.Model):
+    """Project model
+    :inherit: - models.Model
+    :fields: - user, title, description, time_estimate, requirements
+    :methods: - __str__()
+    """
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='projects',
                              on_delete=models.CASCADE)
@@ -16,6 +21,11 @@ class Project(models.Model):
 
 
 class Position(models.Model):
+    """Position model
+    :inherit: - models.Model
+    :fields: - name, description, project, time, skill
+    :methods: - __str__()
+    """
     name = models.CharField(max_length=50)
     description = models.TextField(default='')
     project = models.ForeignKey(Project, related_name='positions')
@@ -33,4 +43,3 @@ class Position(models.Model):
 #     # project_status = ForeignKey(Position)
 #     # accepted_rejected = CharField() or BooleanField()
 #     pass
-

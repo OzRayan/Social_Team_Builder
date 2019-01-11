@@ -3,6 +3,9 @@ from . import models
 
 
 class ProjectForm(forms.ModelForm):
+    """Project form
+    :inherit: - forms.ModelForm class
+    """
     description = forms.Textarea(attrs={"cols": 28, "rows": 6})
 
     class Meta:
@@ -15,6 +18,9 @@ class ProjectForm(forms.ModelForm):
 
 
 class PositionForm(forms.ModelForm):
+    """Position form
+    :inherit: - forms.ModelForm
+    """
     description = forms.Textarea(attrs={'cols': 28, 'rows': 6})
 
     class Media:
@@ -27,6 +33,7 @@ class PositionForm(forms.ModelForm):
         fields = ['name', 'description', 'time']
 
 
+# PositionFormset for PositionInlineFormset
 PositionFormset = forms.modelformset_factory(
     models.Position,
     form=PositionForm,

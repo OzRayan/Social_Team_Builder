@@ -2,13 +2,13 @@
 
 {% block title %}Delete {{ project }} | {{ block.super }}{% endblock %}
 
-  {% block content %}
+{% block content %}
 <div class="bounds circle--page circle--article">
     <div class="grid-70">
     <form action="" method="POST">
         {% csrf_token %}
         <h4>Sure you want to delete {{ project }}?</h4>
-        <p>Deleting will definitely delete the prject!</p>
+        <p>Deleting will definitely delete the project!</p>
         <div class="grid-30">
             <button class="button button-primary" type="submit">Yes</button>
         </div>
