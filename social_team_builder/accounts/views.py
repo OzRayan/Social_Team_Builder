@@ -272,7 +272,7 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
 class PasswordEditView(LrM, PageTitleMixin, UpdateView):
     # model = get_user_model()
     form_class = forms.PasswordForm
-    success_url = reverse_lazy("accounts:profile")
+    # success_url = reverse_lazy("accounts:profile")
     template_name = "accounts/password_edit.html"
     page_title = "Update Password"
 

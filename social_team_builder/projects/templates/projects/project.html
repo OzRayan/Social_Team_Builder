@@ -36,16 +36,22 @@
         <div class="circle--project--positions">
         <h2>Positions</h2>
 
-        <ul class="circle--group--list">
+        <ol class="circle--group--list">
             {% for position in positions %}
+            <div class="d-flex justify-content-betwwen">
+
                 <li>
                     <h3>{{ position.name }}</h3>
                     <p>{{ position.description|mark_down }}</p>
+                    <i>{{ position.time }}</i>
+                    <div>
                     <a class="button button-primary">Apply</a>
+                        </div>
                 </li>
+            </div>
             {% endfor %}
 
-        </ul>
+        </ol>
         </div>
 
     </div>

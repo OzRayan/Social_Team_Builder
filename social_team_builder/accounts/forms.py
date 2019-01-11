@@ -1,36 +1,10 @@
 import re
 from django import forms
-from . import models
-from . import validation as vd
-
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-
-def error(error_message):
-    """Validation error for failing checks"""
-    raise forms.ValidationError(error_message)
-
-
-def validator(new, check, profile, old=None, create=False):
-    if create is True:
-        if not old:
-            raise error(vd.error_msg['a'])
-        if old == new:
-            raise error(vd.error_msg['g'])
-    if not new:
-        raise error(vd.error_msg['b'])
-    if not check:
-        raise error(vd.error_msg['c'])
-    if len(new) < 14:
-        raise error(vd.error_msg['d'])
-    if new != check:
-        raise error(vd.error_msg['e'])
-    if profile.first_name.lower() in new or profile.last_name.lower() in new:
-        raise error(vd.error_msg['f'])
-    for regex_pattern, err in vd.regex.items():
-        if not re.findall(regex_pattern, new):
-            raise error(err)
+from . import models
 
 
 class UserCreateForm(UserCreationForm):
@@ -162,9 +136,9 @@ class PasswordForm(forms.Form):
         self.request = request
         super().__init__(*args, **kwargs)
 
-    @staticmethod
-    def error(error_message):
+    def error(self, error_message):
         """Validation error for failing checks"""
+        messages.error(self.request, error_message)
         raise forms.ValidationError(error_message)
 
     def clean(self):
@@ -189,7 +163,6 @@ class PasswordForm(forms.Form):
         if old_pass == new_pass:
             self.error('New password can\'t match with the old password!')
         if new_pass != check_pass:
-            print(check_pass)
             self.error('Passwords doesn\'t match!')
 
         # Checks if user profile name are present in password

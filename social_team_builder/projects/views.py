@@ -35,19 +35,22 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
-        context['positions'] = models.Position.objects.filter(
-            project__in=context['projects'])
-        context['filter'] = self.request.GET.get('position')
+        context['positions'] = models.Position.objects.exclude(
+            apply__status=True
+        )
+        context['selected'] = self.request.GET.get('filter')
         return context
 
     def get_queryset(self):
         # noinspection PyUnresolvedReferences
         queryset = super().get_queryset()
         term = self.request.GET.get('q')
-
         if term:
             queryset = queryset.filter(Q(title__icontains=term) |
                                        Q(description__icontains=term))
+        filter = self.request.GET.get('filter')
+        if filter:
+            queryset = queryset.filter(Q(positions__name=filter))
         return queryset
 
 
@@ -123,7 +126,6 @@ class ProjectEditView(LrM, PageTitleMixin,
     form_class = forms.ProjectForm
     template_name = "projects/project_edit.html"
     context_object_name = "project"
-    success_url = reverse_lazy('projects:project_list')
 
     def get_page_title(self):
         return f"Update {self.object}"
@@ -140,7 +142,6 @@ class ProjectEditView(LrM, PageTitleMixin,
         context['position_formset'] = forms.PositionInlineFormset(
             queryset=models.Position.objects.filter(
                 project=context['project']))
-        print(dir(context['position_formset']))
         return context
 
     def post(self, request, *args, **kwargs):

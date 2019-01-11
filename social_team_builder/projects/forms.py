@@ -46,6 +46,8 @@ PositionInlineFormset = forms.inlineformset_factory(
     form=PositionForm,
     fields=('name', 'description', 'time'),
     extra=1,
+    formset=PositionFormset,
     min_num=0,
-    max_num=5
+    max_num=5,
+    can_delete=True
 )
