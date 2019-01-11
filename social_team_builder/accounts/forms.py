@@ -1,5 +1,7 @@
 import re
+from PIL import Image
 from django import forms
+from django.core.files import File
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -40,6 +42,36 @@ class UserProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['bio'].label = 'Short bio'
+
+
+class AvatarForm(forms.ModelForm):
+    """Avatar form
+    :inherit: - forms.ModelForm"""
+
+    x = forms.FloatField(widget=forms.HiddenInput())
+    y = forms.FloatField(widget=forms.HiddenInput())
+    height = forms.FloatField(widget=forms.HiddenInput())
+    width = forms.FloatField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = get_user_model()
+        fields = ('avatar', 'x', 'y', 'height', 'width')
+
+    def save(self):
+        avatar = super(AvatarForm, self).save()
+
+        x = self.cleaned_data.get('x')
+        y = self.cleaned_data.get('y')
+        w = self.cleaned_data.get('width')
+        h = self.cleaned_data.get('height')
+
+        image = Image.open(avatar.file)
+        # rotated_omage = image.rotate()
+        cropped_image = image.crop((x, y, w + x, h + y))
+        # resized_image = cropped_image.resize((200, 200), Image.ANTIALIAS)
+        cropped_image.save(avatar.file.path)
+
+        return avatar
 
 
 class BaseForm(forms.ModelForm):
@@ -83,7 +115,7 @@ class ProjectForm(BaseForm):
 SkillFormset = forms.modelformset_factory(
     models.Skill,
     form=SkillForm,
-    extra=1,
+    extra=2,
     can_delete=True
 
 )
@@ -93,7 +125,7 @@ SkillInlineFormSet = forms.inlineformset_factory(
     models.Skill,
     form=SkillForm,
     fields=('name',),
-    extra=1,
+    extra=2,
     formset=SkillFormset,
     min_num=0,
     max_num=20,
@@ -148,8 +180,6 @@ class PasswordForm(forms.Form):
         new_pass = cleaned_data.get('new', '')
         check_pass = cleaned_data.get('check_new', '')
         profile = self.request.user
-
-        # validator(new_pass, check_pass, profile, old=old_pass, create=True)
 
         if not old_pass:
             self.error('First give the old password!')

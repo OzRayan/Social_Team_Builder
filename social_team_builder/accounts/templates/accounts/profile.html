@@ -6,21 +6,25 @@
 
 {% block content %}
 
-<div class="bounds circle--page">
-    <div class="circle--page--header circle--fluid">
-        {% if user.is_authenticated and request.user == profile %}
+<!-- Action Bar -->
+{% if user.is_authenticated and request.user == profile %}
+<div class="circle--actions--bar">
+    <div class="bounds">
+        <div class="grid-100">
         <div class="circle--fluid--cell circle--fluid--primary">
-                <h1>{{ profile }}'s Profile</h1>
+            <h1>{{ profile }}'s Profile</h1>
+            <p><a href="{% url 'accounts:password_edit' %}" class="ml-4 mt-3 pt-0">(Change Password)</a></p>
         </div>
         <div class="circle--fluid--cell circle--fluid--secondary">
             <a class="button icon-on-left" href="{% url 'accounts:profile_edit' %}">Edit</a>
         </div>
-        {% else %}
-        <div class="circle--fluid--cell circle--fluid--primary">
-            <h1>{{ profile }}'s Profile</h1>
+
         </div>
-        {% endif %}
     </div>
+</div>
+{% endif %}
+
+<div class="bounds circle--page">
 
     <div class="grid-70">
 
@@ -29,15 +33,9 @@
         <div class="circle--article--body">
             <div class="d-flex justify-content-start">
                 <h1><strong>{{ profile.full_name }}</strong></h1>
-                <a href="{% url 'accounts:password_edit' %}" class="ml-4 mt-3 pt-0">(Change Password)</a>
             </div>
             <i>{{ profile.email }}</i>
             <h4>{{ profile.bio|mark_down }}</h4>
-            <p>
-
-            </p>
-
-
         </div>
 
         <!-- My projects
@@ -66,7 +64,7 @@
         <!-- Avatar
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
         <div class="circle--secondary--module">
-            <div class="circle--primary--avatar">
+            <div class="card pr-auto" style="width: 30rem; hight: 32rem;">
             {% if profile.avatar %}
                 <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
             {% else %}
@@ -96,7 +94,7 @@
                 {% if my_projects %}
                     {% for project in my_projects %}
                         <li>{{ project.name }}</li>
-                        <li><a>{{ project.url }}</a></li>
+                        <a href="{{ project.url }}">{{ project.url }}</a>
                     {% endfor %}
                 {% endif %}
             </ul>

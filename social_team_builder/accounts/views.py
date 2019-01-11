@@ -313,7 +313,7 @@ def password_edit_view(request):
                 user.save()
                 update_session_auth_hash(request, user)
                 messages.success(request, "Password saved!")
-                return HttpResponseRedirect('/accounts/profile/')
+                return HttpResponseRedirect('accounts/profile/')
 
             else:
                 messages.error(request, "Old password incorrect.")

@@ -59,9 +59,6 @@
                         <a class="logo" href="{% url 'projects:project_list' %}"></a>me
                 </h1>
             </div>
-
-
-            {% block search %}
             <div class="circle--fluid--cell circle--fluid--primary">
                 <div class="circle--search grid-75 d-flex justify-content-end">
                     <form method="GET" action="{% url 'projects:project_list' %}">
@@ -82,7 +79,6 @@
                     </form>
                 </div>
             </div>
-            {% endblock %}
 
             <!-- Navigation bar
             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
