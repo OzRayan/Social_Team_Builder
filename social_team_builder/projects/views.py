@@ -48,9 +48,9 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
         if term:
             queryset = queryset.filter(Q(title__icontains=term) |
                                        Q(description__icontains=term))
-        filter = self.request.GET.get('filter')
-        if filter:
-            queryset = queryset.filter(Q(positions__name=filter))
+        selected_filter = self.request.GET.get('filter')
+        if selected_filter:
+            queryset = queryset.filter(Q(positions__name=selected_filter))
         return queryset
 
 

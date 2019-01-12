@@ -19,6 +19,7 @@ from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
 
 from . import forms
 from . import models
+from projects.models import Position, Project
 from .mixins import PageTitleMixin
 
 
@@ -286,39 +287,40 @@ class PasswordEditView(LrM, PageTitleMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
-        form = forms.PasswordForm(data=request.POST, request=user)
-        if form.is_valid():
-            if user.check_password(form.cleaned_data.get('old')):
-                user.set_password(form.cleaned_data.get('new'))
-                user.save()
-                update_session_auth_hash(self.request, user)
-        return super().form_valid(form)
-
-
-@login_required
-def password_edit_view(request):
-    """password_edit_view prepare user data for form, check password auth
-    :decorator: - login_required
-    :input: - request
-    :returns: - HttpResponseRedirect profile detail
-              - render template(accounts/password_edit.html) with form
-    """
-    user = request.user
-    form = forms.PasswordForm(request=request)
-    if request.method == "POST":
         form = forms.PasswordForm(data=request.POST, request=request)
         if form.is_valid():
             if user.check_password(form.cleaned_data.get('old')):
                 user.set_password(form.cleaned_data.get('new'))
                 user.save()
-                update_session_auth_hash(request, user)
-                messages.success(request, "Password saved!")
-                return HttpResponseRedirect('accounts/profile/')
+                update_session_auth_hash(self.request, user)
+                return HttpResponseRedirect(reverse('acounts:profile'))
+        return HttpResponseRedirect(reverse("accounts:password_edit"))
 
-            else:
-                messages.error(request, "Old password incorrect.")
 
-    return render(request, 'accounts/password_edit.html', {'form': form})
+# @login_required
+# # def password_edit_view(request):
+# #     """password_edit_view prepare user data for form, check password auth
+# #     :decorator: - login_required
+# #     :input: - request
+# #     :returns: - HttpResponseRedirect profile detail
+# #               - render template(accounts/password_edit.html) with form
+# #     """
+# #     user = request.user
+# #     form = forms.PasswordForm(request=request)
+# #     if request.method == "POST":
+# #         form = forms.PasswordForm(data=request.POST, request=request)
+# #         if form.is_valid():
+# #             if user.check_password(form.cleaned_data.get('old')):
+# #                 user.set_password(form.cleaned_data.get('new'))
+# #                 user.save()
+# #                 update_session_auth_hash(request, user)
+# #                 messages.success(request, "Password saved!")
+# #                 return HttpResponseRedirect('accounts/profile/')
+# #
+# #             else:
+# #                 messages.error(request, "Old password incorrect.")
+# #
+# #     return render(request, 'accounts/password_edit.html', {'form': form})
 
 
 class ApplicationView(LrM, PrefetchRelatedMixin, TemplateView):
@@ -326,6 +328,8 @@ class ApplicationView(LrM, PrefetchRelatedMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationView, self).get_context_data(**kwargs)
+        pk = self.request.user.id
+        context['projects'] = Project.objects.filter(user_id=pk)
         # noinspection PyUnresolvedReferences
-        context['skills'] = models.Skill.objects.all()
+        context['positions'] = Position.objects.exclude(apply__status=True)
         return context

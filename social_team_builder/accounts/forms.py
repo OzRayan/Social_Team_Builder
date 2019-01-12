@@ -152,7 +152,7 @@ ProjectInlineFormset = forms.inlineformset_factory(
 )
 
 
-class PasswordForm(forms.Form):
+class PasswordForm(forms.ModelForm):
     """Password Form
     :Inherit: - forms.Form
     :fields: - old - password --> CharField widget PasswordInput
@@ -162,6 +162,10 @@ class PasswordForm(forms.Form):
     old = forms.CharField(widget=forms.PasswordInput())
     new = forms.CharField(widget=forms.PasswordInput())
     check_new = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = get_user_model()
+        fields = ('old', 'new', 'check_new')
 
     def __init__(self, request=None, *args, **kwargs):
         """Prepares user data for password validation"""

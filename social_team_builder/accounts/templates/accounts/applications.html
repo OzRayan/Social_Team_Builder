@@ -25,9 +25,10 @@
         <div class="circle--filter circle--secondary--module">
             <h4>My Projects</h4>
                 <ul class="circle--filter--list">
+                    {% for pro in projects %}
                     <li><a class="selected">All Projects</a></li>
-                    <li><a>Currency Calculator</a></li>
-                    <li><a>Twitter Client</a></li>
+                    <li><a>{{ pro }}</a></li>
+                    {% endfor %}
                 </ul>
         </div>
 
@@ -36,7 +37,7 @@
             <h4>Project Needs</h4>
                 <ul class="circle--filter--list">
                     <li><a class="selected">All Needs</a></li>
-                    {% for skill in skills %}
+                    {% for skill in positions %}
                     <li><a>{{ skill }}</a></li>
                     {% endfor %}
                 </ul>
