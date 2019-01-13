@@ -5,7 +5,7 @@
 {% block content %}
 
     <!-- Action Bar -->
-    <div class="circle--actions--bar">
+    <div class="circle--actions--bar action-bar">
         <div class="bounds">
             <div class="grid-100">
                 <div class="circle--fluid--cell circle--fluid--primary">
@@ -13,10 +13,10 @@
                 </div>
             {% if user.is_authenticated %}
                 <div class="circle--fluid--cell circle--fluid--secondary">
-                    <a class="button button-primary icon-on-left" href="{% url 'projects:create' %}">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 13 13" style="enable-background:new 0 0 13 13;" xml:space="preserve" class="add">
-                            <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "/>
-                        </svg>
+                    <a class="button button-secondary my-button" href="{% url 'projects:create' %}">
+                        <!--<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 13 13" style="enable-background:new 0 0 13 13;" xml:space="preserve" class="">-->
+                            <!--<polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "/>-->
+                        <!--</svg>-->
                         New Project
                     </a>
                 </div>

@@ -1,3 +1,42 @@
+.body {
+    color: #eaeaea;
+    background-color: #444;
+}
 .messages {
     list-style: none;
 }
+
+.action-bar {
+    background-color: #333;
+}
+
+.my-button {
+    color: #3098FF;
+    box-shadow: 0 0 0 2px #3098FF inset;
+}
+
+.my-button-del {
+    color: #FF005D;
+    box-shadow: 0 0 0 2px #FF005D inset;
+}
+
+.my-color {
+    color:#3098FF;
+}
+
+.my-color-del {
+    color: #FF005D;
+}
+
+.custom-navbar {
+    background-color: #262626;
+}
+
+code {
+    background-color: #0b0b0b;
+    border: 0px solid #3098FF;
+    color: #C000FF;
+}
+
+/* #C000FF purple
+e83e8c markdown text*/

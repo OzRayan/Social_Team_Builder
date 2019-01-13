@@ -8,11 +8,11 @@
 
 <!-- Action Bar -->
 {% if user.is_authenticated and project.user == user %}
-<div class="circle--actions--bar">
+<div class="circle--actions--bar action-bar">
     <div class="bounds">
         <div class="grid-100">
-            <a class="button" href="{% url 'projects:edit' project.pk %}">Edit Project</a>
-            <a class="button button-text" href="{% url 'projects:delete' project.pk %}">Delete Project</a>
+            <a class="button my-button" href="{% url 'projects:edit' project.pk %}">Edit Project</a>
+            <a class="button my-button-del" href="{% url 'projects:delete' project.pk %}">Delete Project</a>
         </div>
     </div>
 </div>
@@ -24,7 +24,7 @@
             <h4 class="circle--article--section">Project</h4>
             <h1 class="circle--article--title">{{ project.title }}</h1>
             <p class="circle--article--byline">
-                Project Owner: <a href="{% url 'accounts:profile' project.user.id %}">
+                Project Owner: <a class="my-color" href="{% url 'accounts:profile' project.user.id %}">
                 {{ project.user.full_name }}</a>
             </p>
         </div>
@@ -45,7 +45,7 @@
                     <p>{{ position.description|mark_down }}</p>
                     <i>{{ position.time }}</i>
                     <div>
-                    <a class="button button-primary">Apply</a>
+                    <a class="button button-secondary my-button">Apply</a>
                         </div>
                 </li>
             </div>

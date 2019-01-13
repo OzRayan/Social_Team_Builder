@@ -293,7 +293,7 @@ class PasswordEditView(LrM, PageTitleMixin, UpdateView):
                 user.set_password(form.cleaned_data.get('new'))
                 user.save()
                 update_session_auth_hash(self.request, user)
-                return HttpResponseRedirect(reverse('acounts:profile'))
+                return HttpResponseRedirect(reverse_lazy('acounts:profile'))
         return HttpResponseRedirect(reverse("accounts:password_edit"))
 
 
