@@ -1,7 +1,7 @@
-REQUIRED!   [14.36 from 32] - [52.21%] [ready at: 96.875%]
+REQUIRED!   [14.36 from 32] - [53.15%] [ready at: 96.875%]
 
 1. [x] - Can register for an account
-    1. {4/5} - Complete profile during or immediately after sign up
+    1. {x} - Complete profile during or immediately after sign up
        {x} - Email validation after sign up
 2. [x] - Can login with valid credentials
 3. [x] - Can log out
@@ -30,14 +30,14 @@ REQUIRED!   [14.36 from 32] - [52.21%] [ready at: 96.875%]
 12. [1/10] - Notified when approved/rejected for a position
 13. [x] - Can search by terms that match project name or description.
         Search is case-insensitive.
-14. [3/4] - Can filter projects by open position skills needed
+14. [x] - Can filter projects by open position skills needed
     1. {1/4} - A 'project for you' list with projects automatically
             filtered for the current user's skill set
 15. [] - Can apply for a position
     1. {} - Can't apply for the same position twice
     2. {} - Filled positions are displayed differently or at all
-16. [2/10] - Additional Design
-17. [2/5] - Documentation
+16. [4/10] - Additional Design
+17. [3/5] - Documentation
 18. [] - Testing: {0%} - profile
                   {0%} - project
                   {0%} - total above 50%
