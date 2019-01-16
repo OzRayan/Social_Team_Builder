@@ -8,10 +8,11 @@
     <div class="circle--actions--bar action-bar">
         <div class="bounds">
             <div class="grid-100">
+                {% if user.is_authenticated %}
                 <div class="circle--fluid--cell circle--fluid--primary">
-                    <h2>Projects</h2>
+                    <h2>Projects <i><a href="?for_you=for-you" class="selected"> for you</a></i></h2>
                 </div>
-            {% if user.is_authenticated %}
+
                 <div class="circle--fluid--cell circle--fluid--secondary">
                     <a class="button button-secondary my-button" href="{% url 'projects:create' %}">
                         <!--<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 13 13" style="enable-background:new 0 0 13 13;" xml:space="preserve" class="">-->
@@ -19,6 +20,10 @@
                         <!--</svg>-->
                         New Project
                     </a>
+                </div>
+            {% else %}
+                <div class="circle--fluid--cell circle--fluid--primary">
+                    <h2>Projects</h2>
                 </div>
             {% endif %}
             </div>
@@ -30,6 +35,7 @@
 
     <!-- Skills Filter list -->
     <div class="grid-25">
+
         <div class="circle--filter circle--secondary--module">
             <h4>Project Needs</h4>
 

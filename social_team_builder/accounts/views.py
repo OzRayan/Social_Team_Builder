@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.views.generic import (CreateView, FormView, RedirectView,
-                                  TemplateView, UpdateView, DetailView)
+                                  TemplateView, UpdateView, ListView)
 
 from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
 
@@ -323,8 +323,10 @@ class PasswordEditView(LrM, PageTitleMixin, UpdateView):
 # #     return render(request, 'accounts/password_edit.html', {'form': form})
 
 
-class ApplicationView(LrM, PrefetchRelatedMixin, TemplateView):
+class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
     template_name = "accounts/applications.html"
+    model = models.UserApplication
+    prefetch_related = ['projects', ]
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationView, self).get_context_data(**kwargs)
@@ -336,5 +338,9 @@ class ApplicationView(LrM, PrefetchRelatedMixin, TemplateView):
         return context
 
     def get_queryset(self):
-        queryset = Project.objects.all()
+        queryset = super().get_queryset()
+        user = models.User.objects.all().exclude(pk=self.request.user.id)
+        print(user)
+        # queryset = queryset.filter(status=user)
+
 

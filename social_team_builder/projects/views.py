@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin as LrM
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -46,13 +47,22 @@ class ProjectListView(ListView):
         return context
 
     def get_queryset(self):
+        user_skills = None
         # noinspection PyUnresolvedReferences
         queryset = super().get_queryset()
+        user = self.request.user
+        if str(user) != 'AnonymousUser':
+            user_skills = user.profile_skills.all().values('name')
+        # print(self.request.user.profile_skills.all().values('name'))
+        for_you = self.request.GET.get('for_you')
         term = self.request.GET.get('q')
+        selected_filter = self.request.GET.get('filter')
+
+        if for_you:
+            queryset = queryset.filter(Q(positions__name__in=user_skills))
         if term:
             queryset = queryset.filter(Q(title__icontains=term) |
                                        Q(description__icontains=term))
-        selected_filter = self.request.GET.get('filter')
         if selected_filter:
             queryset = queryset.filter(Q(positions__name=selected_filter))
         return queryset
