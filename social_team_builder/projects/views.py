@@ -15,6 +15,8 @@ from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
 from . import forms
 from . import models
 from .mixin import PageTitleMixin
+# noinspection PyUnresolvedReferences
+from accounts.models import UserApplication
 
 
 class ProjectListView(PrefetchRelatedMixin, ListView):
@@ -132,7 +134,7 @@ class ProjectEditView(LrM, PageTitleMixin,
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get('pk')
-        project = get_object_or_404(models.Project, pk=pk)
+        project = models.Project.objects.filter(pk=pk)
         return project
 
     def get_context_data(self, **kwargs):
@@ -179,7 +181,7 @@ class ProjectEditView(LrM, PageTitleMixin,
         return HttpResponseRedirect(reverse('accounts:profile_edit'))
 
 
-class ProjectDetailView(DetailView):
+class ProjectDetailView(PrefetchRelatedMixin, DetailView):
     """Project Detail view
     :url:
     project/(?P<pk>\d+)/$
@@ -190,13 +192,18 @@ class ProjectDetailView(DetailView):
     model = models.Project
     context_object_name = "project"
     template_name = "projects/project.html"
-    # prefetch_related = ['positions', 'user']
+    prefetch_related = ['positions', 'user', 'positions__apply']
 
     def get_context_data(self, **kwargs):
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
         context['positions'] = models.Position.objects.filter(
-            project=context['project'])
+            project=context['project']).exclude(apply__status=True)
+        # noinspection PyUnresolvedReferences
+        context['applied'] = models.Position.objects.filter(
+            project=context['project'],
+            apply__applicant=self.request.user)
+        print(dir(context['applied'].values))
         return context
 
 
@@ -224,4 +231,20 @@ class ProjectDeleteView(LrM, DeleteView):
 
 
 class ApplyView(LrM, PageTitleMixin, TemplateView):
-    pass
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        project_pk = kwargs.get('pr_pk')
+        position_pk = kwargs.get('ps_pk')
+        # noinspection PyUnresolvedReferences
+        project = models.Project.objects.get(pk=project_pk)
+        # noinspection PyUnresolvedReferences
+        position = models.Position.objects.get(pk=position_pk)
+        obj, _ = UserApplication.objects.get_or_create(
+            applicant=user,
+            project=project,
+            position=position,
+            defaults={'applicant': user, 'project': project, 'position': position})
+        obj.save()
+        return HttpResponseRedirect(reverse_lazy('projects:project_list'))
+
+

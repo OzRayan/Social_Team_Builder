@@ -28,7 +28,9 @@ class Position(models.Model):
     """
     name = models.CharField(max_length=50)
     description = models.TextField(default='')
-    project = models.ForeignKey(Project, related_name='positions')
+    project = models.ForeignKey(Project,
+                                related_name='positions',
+                                on_delete=models.CASCADE)
     time = models.CharField(max_length=30)
     skill = models.ManyToManyField('accounts.Skill',
                                    related_name='skills')
@@ -36,10 +38,3 @@ class Position(models.Model):
     def __str__(self):
         return f'{self.name}'
 
-
-# class Notification(models.Model):
-#     # user = CharField()
-#     # not_status = CharField()
-#     # project_status = ForeignKey(Position)
-#     # accepted_rejected = CharField() or BooleanField()
-#     pass

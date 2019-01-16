@@ -19,8 +19,9 @@ from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
 
 from . import forms
 from . import models
-from projects.models import Position, Project
 from .mixins import PageTitleMixin
+# noinspection PyUnresolvedReferences
+from projects.models import Position, Project
 
 
 class ValidateView(RedirectView):
@@ -151,7 +152,6 @@ class UserProfileView(PageTitleMixin,
     #
     # def get_object(self, queryset=None):
     #     return self.request.user
-
 
     def get(self, request, **kwargs):
         pk = kwargs.get('pk')

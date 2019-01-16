@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'project/(?P<pk>\d+)/$', views.ProjectDetailView.as_view(), name='detail'),
     url(r'project/(?P<pk>\d+)/delete/$', views.ProjectDeleteView.as_view(), name='delete'),
     url(r'project/(?P<pk>\d+)/edit/$', views.ProjectEditView.as_view(), name='edit'),
+    url(r'^project/(?P<pr_pk>\d+)/apply/position/(?P<ps_pk>\d+)/$', views.ApplyView.as_view(), name='apply'),
 ]

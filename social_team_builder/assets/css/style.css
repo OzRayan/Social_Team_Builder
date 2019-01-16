@@ -1,23 +1,33 @@
 .body {
     color: #eaeaea;
-    background-color: #444;
+    background-color: #231F26;
+}
+
+a:hover {
+    text-decoration: none !important;
 }
 .messages {
     list-style: none;
 }
 
 .action-bar {
-    background-color: #333;
+    background-color: #1F1C21;
 }
 
 .my-button {
-    color: #3098FF;
-    box-shadow: 0 0 0 2px #3098FF inset;
+    color: #EAEAEA;
+    box-shadow: 0 0 0 2px #EAEAEA inset;
 }
 
 .my-button-del {
-    color: #FF005D;
-    box-shadow: 0 0 0 2px #FF005D inset;
+    color: #C9005E;
+    box-shadow: 0 0 0 2px #C9005E inset;
+}
+
+.my-button-del:hover {
+    color: #EAEAEA;
+    box-shadow: 0 0 0 2px #EAEAEA inset;
+
 }
 
 .my-color {
@@ -29,7 +39,7 @@
 }
 
 .custom-navbar {
-    background-color: #262626;
+    background-color: #1A171C;
 }
 
 code {
@@ -38,5 +48,5 @@ code {
     color: #C000FF;
 }
 
-/* #C000FF purple
+/* #7B00E0 purple
 e83e8c markdown text*/
