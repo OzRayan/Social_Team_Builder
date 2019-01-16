@@ -44,6 +44,7 @@
                     <h3>{{ position.name }}</h3>
                     <p>{{ position.description|mark_down }}</p>
                     <i>{{ position.time }}</i>
+                    {% if user.is_authenticated and position.project.user != request.user %}
                     <div>
                         {% if position not in applied %}
                             <a class="button button-primary" href="{% url 'projects:apply' position.project.id position.id %}">Apply</a>
@@ -51,6 +52,7 @@
                             <button disabled class="button button-inactive">Applied</button>
                         {% endif %}
                     </div>
+                    {% endif %}
                 </li>
             </div>
             {% endfor %}

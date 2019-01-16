@@ -19,7 +19,7 @@ from .mixin import PageTitleMixin
 from accounts.models import UserApplication
 
 
-class ProjectListView(PrefetchRelatedMixin, ListView):
+class ProjectListView(ListView):
     """Projects list view
     :url:
     ^$
@@ -32,14 +32,16 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
     template_name = "projects/project_list.html"
     model = models.Project
     context_object_name = "projects"
-    prefetch_related = ['positions']
+    # prefetch_related = ['positions']
 
     def get_context_data(self, **kwargs):
+        positions = models.Position.objects.exclude(
+            apply__status=True)
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
-        context['positions'] = models.Position.objects.exclude(
-            apply__status=True
-        )
+        context['positions_list'] = positions.values('name').distinct()
+        context['positions'] = positions
+        # print(dir(context['positions'].distinct()))
         context['selected'] = self.request.GET.get('filter')
         return context
 
@@ -134,11 +136,11 @@ class ProjectEditView(LrM, PageTitleMixin,
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get('pk')
-        project = models.Project.objects.filter(pk=pk)
+        project = models.Project.objects.filter(pk=pk).first()
         return project
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectEditView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
         # noinspection PyUnresolvedReferences
         context['position_formset'] = forms.PositionInlineFormset(
@@ -195,15 +197,22 @@ class ProjectDetailView(PrefetchRelatedMixin, DetailView):
     prefetch_related = ['positions', 'user', 'positions__apply']
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+        print(dir(user))
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
         context['positions'] = models.Position.objects.filter(
             project=context['project']).exclude(apply__status=True)
         # noinspection PyUnresolvedReferences
-        context['applied'] = models.Position.objects.filter(
-            project=context['project'],
-            apply__applicant=self.request.user)
-        print(dir(context['applied'].values))
+        if user.is_authenticated():
+            context['applied'] = models.Position.objects.filter(
+                project=context['project'],
+                apply__applicant=user)
+        else:
+            context['applied'] = models.Position.objects.filter(
+                project=context['project']
+            )
+        # print(dir(context['applied'].values))
         return context
 
 

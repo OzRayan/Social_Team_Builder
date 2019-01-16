@@ -331,5 +331,10 @@ class ApplicationView(LrM, PrefetchRelatedMixin, TemplateView):
         pk = self.request.user.id
         context['projects'] = Project.objects.filter(user_id=pk)
         # noinspection PyUnresolvedReferences
-        context['positions'] = Position.objects.exclude(apply__status=True)
+        context['positions'] = Position.objects.exclude(
+            apply__status=True).values('name').distinct()
         return context
+
+    def get_queryset(self):
+        queryset = Project.objects.all()
+
