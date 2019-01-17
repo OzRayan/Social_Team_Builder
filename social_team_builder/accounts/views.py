@@ -326,21 +326,29 @@ class PasswordEditView(LrM, PageTitleMixin, UpdateView):
 class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
     template_name = "accounts/applications.html"
     model = models.UserApplication
+    context_object_name = 'applications'
     prefetch_related = ['projects', ]
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationView, self).get_context_data(**kwargs)
         pk = self.request.user.id
+        context['applications_list'] = self.get_queryset().values('status')
+        # noinspection PyUnresolvedReferences
         context['projects'] = Project.objects.filter(user_id=pk)
         # noinspection PyUnresolvedReferences
-        context['positions'] = Position.objects.exclude(
+        context['skills_list'] = Position.objects.exclude(
             apply__status=True).values('name').distinct()
+        context['pro_selected'] = self.request.GET.get('pro_filter')
+        context['skill_selected'] = self.request.GET.get('skill_filter')
+        context['app_selected'] = self.request.GET.get('app_filter')
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        app_term = self.request.GET.get('app_filter')
+        pro_term = self.request.GET.get('pro_filter')
+        skill_term = self.request.GET.get('skill_filter')
         user = models.User.objects.all().exclude(pk=self.request.user.id)
         print(user)
-        # queryset = queryset.filter(status=user)
 
 

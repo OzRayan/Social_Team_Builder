@@ -14,10 +14,21 @@
         <div class="circle--filter circle--secondary--module">
             <h4>Status</h4>
             <ul class="circle--filter--list">
-                <li><a class="selected">All Applications</a></li>
-                <li><a>New Applications</a></li>
-                <li><a>Accepted</a></li>
-                <li><a>Rejected</a></li>
+
+
+                {% if applications_list %}
+                    <li><a href="{% url 'accounts:application' %}" {% if not app_selected %} class="selected"{% endif %}>All Applications</a></li>
+                    {% for application in applications_list %}
+                        <li><a href="?app_filter={{ application }}"{% if app_selected == application %} class="selected"{% endif %}>{{ application }}</a></li>
+                    {% endfor %}
+                {% else %}
+                    <li>N/A</li>
+                {% endif %}
+
+                <!--<li><a class="selected">All Applications</a></li>-->
+                <!--<li><a>New Applications</a></li>-->
+                <!--<li><a>Accepted</a></li>-->
+                <!--<li><a>Rejected</a></li>-->
             </ul>
         </div>
 
@@ -25,10 +36,20 @@
         <div class="circle--filter circle--secondary--module">
             <h4>My Projects</h4>
                 <ul class="circle--filter--list">
-                    <li><a class="selected">All Projects</a></li>
-                    {% for pro in projects %}
-                    <li><a>{{ pro }}</a></li>
-                    {% endfor %}
+
+                    {% if projects %}
+                        <li><a href="{% url 'accounts:application' %}" {% if not pro_selected %} class="selected"{% endif %}>All projects</a></li>
+                        {% for project in projects %}
+                            <li><a href="?pro_filter={{ project.title }}"{% if pro_selected == project.title %} class="selected"{% endif %}>{{ project.title }}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <li>N/A</li>
+                    {% endif %}
+                    <!---->
+                    <!--<li><a class="selected">All Projects</a></li>-->
+                    <!--{% for pro in projects %}-->
+                    <!--<li><a>{{ pro }}</a></li>-->
+                    <!--{% endfor %}-->
                 </ul>
         </div>
 
@@ -36,10 +57,20 @@
         <div class="circle--filter circle--secondary--module">
             <h4>Project Needs</h4>
                 <ul class="circle--filter--list">
-                    <li><a class="selected">All Needs</a></li>
-                    {% for skill in positions %}
-                    <li><a>{{ skill.name }}</a></li>
-                    {% endfor %}
+
+                    {% if skills_list %}
+                        <li><a href="{% url 'accounts:application' %}" {% if not skill_selected %} class="selected"{% endif %}>All Needs</a></li>
+                        {% for skill in skills_list %}
+                            <li><a href="?skill_filter={{ skill.name }}"{% if skill_selected == skill.name %} class="selected"{% endif %}>{{ skill.name }}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <li>N/A</li>
+                    {% endif %}
+
+                    <!--<li><a class="selected">All Needs</a></li>-->
+                    <!--{% for skill in positions %}-->
+                    <!--<li><a>{{ skill.name }}</a></li>-->
+                    <!--{% endfor %}-->
                 </ul>
         </div>
 
