@@ -327,14 +327,24 @@ class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
     template_name = "accounts/applications.html"
     model = models.UserApplication
     context_object_name = 'applications'
-    prefetch_related = ['projects', ]
+    prefetch_related = ['applicant__projects', ]
+
+    @staticmethod
+    def choice(arg):
+        if arg == "New application":
+            arg = None
+        if arg == "Accepted":
+            arg = True
+        if arg == "Rejected":
+            arg = False
+        return arg
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationView, self).get_context_data(**kwargs)
         pk = self.request.user.id
-        context['applications_list'] = self.get_queryset().values('status')
+        context['app_list'] = ['New application', 'Accepted', 'Rejected']
         # noinspection PyUnresolvedReferences
-        context['projects'] = Project.objects.filter(user_id=pk)
+        context['projects'] = self.request.user.projects.all()
         # noinspection PyUnresolvedReferences
         context['skills_list'] = Position.objects.exclude(
             apply__status=True).values('name').distinct()
@@ -350,5 +360,23 @@ class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
         skill_term = self.request.GET.get('skill_filter')
         user = models.User.objects.all().exclude(pk=self.request.user.id)
         print(user)
+
+        if app_term:
+            queryset = queryset.filter(status=self.choice(app_term))
+
+        if pro_term:
+            queryset = queryset.filter(project__title=pro_term)
+
+        if skill_term:
+            queryset = queryset.filter(position__name=skill_term)
+
+        return queryset
+
+
+class UserDecisionView(LrM, TemplateView):
+    def get(self):
+        pass
+
+
 
 

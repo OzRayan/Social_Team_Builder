@@ -37,7 +37,7 @@ class PositionForm(forms.ModelForm):
 PositionFormset = forms.modelformset_factory(
     models.Position,
     form=PositionForm,
-    extra=1,
+    extra=2,
 )
 
 PositionInlineFormset = forms.inlineformset_factory(
@@ -45,7 +45,7 @@ PositionInlineFormset = forms.inlineformset_factory(
     models.Position,
     form=PositionForm,
     fields=('name', 'description', 'time'),
-    extra=1,
+    extra=2,
     formset=PositionFormset,
     min_num=0,
     max_num=5,

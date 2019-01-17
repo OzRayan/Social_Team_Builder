@@ -16,9 +16,9 @@
             <ul class="circle--filter--list">
 
 
-                {% if applications_list %}
+                {% if app_list %}
                     <li><a href="{% url 'accounts:application' %}" {% if not app_selected %} class="selected"{% endif %}>All Applications</a></li>
-                    {% for application in applications_list %}
+                    {% for application in app_list %}
                         <li><a href="?app_filter={{ application }}"{% if app_selected == application %} class="selected"{% endif %}>{{ application }}</a></li>
                     {% endfor %}
                 {% else %}
@@ -87,24 +87,39 @@
             </thead>
 
             <tbody>
-                <tr class="clickable-row" data-href="profile.html">
-                <td>
-                    <h3>Jim Horton</h3>
-                    <p>Currency Calculator</p>
-                </td>
-                <td class="circle--cell--right">
-                    <span class="secondary-label">Rails Developer</span>
-                </td>
-                </tr>
-                <tr class="clickable-row" data-href="profile.html">
-                <td>
-                    <h3>Jenny McMann</h3>
-                    <p>Currency Calculator</p>
-                </td>
-                <td class="circle--cell--right">
-                    <span class="secondary-label">Designer</span>
-                </td>
-                </tr>
+                {% for application in applications %}
+                    <tr class="clickable-row" data-href="{% url 'accounts:profile' application.applicant.id %}">
+                    <td>
+                        <h3>{{ application.applicant.full_name }}</h3>
+                        <p>{{ application.project }}</p>
+                    </td>
+                    <td class="circle--cell--right">
+                        <span class="secondary-label">{{ application.position }}</span>
+                    </td>
+                    {% if application.applicant.id == request.user.id %}
+                        <td>
+                            <h5>
+                                This can be accepted or rejected only by
+                                <strong><i>{{ application.project.user.full_name }}</i></strong>
+                            </h5>
+                        </td>
+                    {% else %}
+                        {% if application.status == None %}
+                            <td>
+                                <a class="button button-primary" href="">Accept</a>
+                            </td>
+                            <td>
+                                <a class="button button-primary" href="">Reject</a>
+                            </td>
+                        {% elif application.status %}
+                            <td>Accepted</td>
+                        {% elif application.status %}
+                            <td>Rejected</td>
+                        {% endif %}
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+
             </tbody>
         </table>
 
