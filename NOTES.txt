@@ -1,4 +1,4 @@
-REQUIRED!   [14.36 from 30] - [71.53%] [ready at: 96.875%]
+REQUIRED!   [14.36 from 30] - [84,86%] [ready at: 96.875%]
 
 1. [x] - Can register for an account
     1. {x} - Complete profile during or immediately after sign up
@@ -11,7 +11,7 @@ REQUIRED!   [14.36 from 30] - [71.53%] [ready at: 96.875%]
        (2/3) - Password edit with password meter
 5. [x] - Can upload an avatar
     1. {} - Given tools to edit avatar after upload (resize, crop, rotate, flip)
-# 6. [] - Can pick multiple skills for my profile from a list
+   # 6. [] - Can pick multiple skills for my profile from a list
 6. {x} - Can create custom skills for my profile
 7. [4/5] - Can create multiple positions for a project
            Positions relate to a particular skill
@@ -21,12 +21,12 @@ REQUIRED!   [14.36 from 30] - [71.53%] [ready at: 96.875%]
 8. [x] - Can create a project
     1. {x} - Can use Markdown in the project description
              This Markdown is rendered os the project page
-9. [] - Can see applicant for a project
-    1. {} - Can filter applicants by status
-10. [] - Can approve an applicant
-    10. {} - Can approve an applicant directly from the list page
-11. [] - Can reject an applicant
-    11. {} - Can reject an applicant directly from the list page
+9. [x] - Can see applicant for a project
+    1. {x} - Can filter applicants by status
+   # 10. [] - Can approve an applicant
+10. {x} - Can approve an applicant directly from the list page
+   # 11. [] - Can reject an applicant
+11. {x} - Can reject an applicant directly from the list page
 12. [1/10] - Notified when approved/rejected for a position
 13. [x] - Can search by terms that match project name or description.
         Search is case-insensitive.

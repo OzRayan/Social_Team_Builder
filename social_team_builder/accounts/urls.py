@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'applications/$', views.ApplicationView.as_view(),
         name='application'),
     url(r'applications/(?P<user_pk>\d+)/(?P<pos_pk>\d+)/(?P<decision>\w+)/$',
-        views.UserDecisionView.as_view(), name='decision_update'),
+        views.DecisionView.as_view(), name='decision_update'),
     url(r'validate/(?P<uid>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.ValidateView.as_view(), name='validate'),
 ]

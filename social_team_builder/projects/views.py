@@ -36,13 +36,10 @@ class ProjectListView(ListView):
     # prefetch_related = ['positions']
 
     def get_context_data(self, **kwargs):
-        positions = models.Position.objects.exclude(
-            apply__status=True)
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
+        positions = models.Position.objects.exclude(apply__status=True)
         context['positions_list'] = positions.values('name').distinct()
-        context['positions'] = positions
-        # print(dir(context['positions'].distinct()))
         context['selected'] = self.request.GET.get('filter')
         return context
 

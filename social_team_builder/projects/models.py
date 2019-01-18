@@ -16,6 +16,10 @@ class Project(models.Model):
     time_estimate = models.CharField(max_length=100)
     requirements = models.CharField(max_length=255)
 
+    @property
+    def available(self):
+        return self.positions.exclude(apply__status=True)
+
     def __str__(self):
         return f'{self.title}'
 

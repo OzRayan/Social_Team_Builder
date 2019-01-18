@@ -169,6 +169,7 @@ class UserProfileView(PageTitleMixin,
         context = super().get_context_data(**kwargs)
         context['skills'] = context['profile'].profile_skills.all()
         context['my_projects'] = context['profile'].my_projects.all()
+        context['past_projects'] = context['profile'].projects.all()
         return context
 
 
@@ -342,7 +343,6 @@ class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationView, self).get_context_data(**kwargs)
-        pk = self.request.user.id
         context['app_list'] = ['New application', 'Accepted', 'Rejected']
         # noinspection PyUnresolvedReferences
         context['projects'] = self.request.user.projects.all()
@@ -374,7 +374,7 @@ class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
         return queryset
 
 
-class UserDecisionView(LrM, TemplateView):
+class DecisionView(LrM, TemplateView):
 
     @staticmethod
     def application_update(user, position, arg):

@@ -42,7 +42,7 @@
 
             <ul class="circle--filter--list">
 
-                {% if positions %}
+                {% if positions_list %}
                 <li><a href="{% url 'projects:project_list' %}" {% if not selected %} class="selected"{% endif %}>All Needs</a></li>
                 {% for position in positions_list %}
                 <li><a href="?filter={{ position.name }}"{% if selected == position.name %} class="selected"{% endif %}>{{ position.name }}</a></li>
@@ -72,19 +72,15 @@
 
             <tbody>
                 {% for project in projects %}
-                <tr class="clickable-row" data-href="{% url 'projects:detail' project.id %}">
+                <tr class="clickable-row" data-href="{% url 'projects:detail' project.pk %}">
                         <td><h3>{{ project }}</h3></td>
 
                     <td class="circle--cell--right">
-                        {% for position in positions %}
-                            {% if position.project == project %}
-                                {% if positions|length > 0 %}
-                                    <span class="secondary-label h3">{{ position }}</span>
-                                {% else %}
+                            {% if project.available %}
+                                    <span class="secondary-label h3">{{ project.available|join:", " }}</span>
+                            {% else %}
                                     <span class="secondary-label h3">No open position</span>
-                                {% endif %}
                             {% endif %}
-                        {% endfor %}
                     </td>
 
                 </tr>

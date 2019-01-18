@@ -49,12 +49,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="clickable-row" data-href="project.html">
-                <td><h3>Twitter Client</h3></td>
-                <td class="circle--cell--right">
-                    <span class="secondary-label">Designer</span>
-                </td>
-                </tr>
+                {% if past_projects %}
+                {% for pro in past_projects %}
+                    <tr class="clickable-row" data-href="project.html">
+                        <td><h3>{{ pro }}</h3></td>
+                        <td class="circle--cell--right">
+                            <span class="secondary-label">{{ pro.positions.all|join:", " }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                    <tr><td><h3>N/A</h3></td></tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
