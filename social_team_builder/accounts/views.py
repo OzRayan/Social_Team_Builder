@@ -16,6 +16,7 @@ from django.views.generic import (CreateView, FormView, RedirectView,
                                   TemplateView, UpdateView, ListView)
 
 from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
+from notify.signals import notify
 
 from . import forms
 from . import models
@@ -374,8 +375,34 @@ class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
 
 
 class UserDecisionView(LrM, TemplateView):
-    def get(self):
-        pass
+
+    @staticmethod
+    def application_update(user, position, arg):
+        models.UserApplication.objects.filter(
+            applicant=user, position=position
+        ).update(status=arg)
+
+    def get(self, request, *args, **kwargs):
+        user_pk = self.kwargs.get('user_pk')
+        position_pk = self.kwargs.get('pos_pk')
+        decision = self.kwargs.get('decision')
+        user = models.User.objects.get(pk=user_pk)
+        position = Position.objects.filter(pk=position_pk)
+
+        if user and position:
+            if decision == "accept":
+                self.application_update(user, position, True)
+                message = "accepted"
+            if decision == "reject":
+                self.application_update(user, position, False)
+                message = "rejected"
+            #
+            # notify.send(user, recipient=user,
+            #             verb=f'Your application'
+            #                  f' for {position.project} it was {message}',
+            #             decription="")
+            return HttpResponseRedirect(reverse("accounts:application"))
+
 
 
 

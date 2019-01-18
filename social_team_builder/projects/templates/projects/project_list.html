@@ -78,7 +78,11 @@
                     <td class="circle--cell--right">
                         {% for position in positions %}
                             {% if position.project == project %}
-                                <span class="secondary-label h3">{{ position }}</span>
+                                {% if positions|length > 0 %}
+                                    <span class="secondary-label h3">{{ position }}</span>
+                                {% else %}
+                                    <span class="secondary-label h3">No open position</span>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </td>

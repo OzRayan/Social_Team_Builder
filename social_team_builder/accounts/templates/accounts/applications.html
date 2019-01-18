@@ -88,7 +88,7 @@
 
             <tbody>
                 {% for application in applications %}
-                    <tr class="clickable-row" data-href="{% url 'accounts:profile' application.applicant.id %}">
+                    <tr class="clickable-row" data-href="{% url 'accounts:profile' application.applicant.pk %}">
                     <td>
                         <h3>{{ application.applicant.full_name }}</h3>
                         <p>{{ application.project }}</p>
@@ -106,15 +106,17 @@
                     {% else %}
                         {% if application.status == None %}
                             <td>
-                                <a class="button button-primary" href="">Accept</a>
+                                <a class="button button-primary"
+                                   href="{% url 'accounts:decision_update' application.applicant.pk application.position.pk 'accept' %}">Accept</a>
                             </td>
                             <td>
-                                <a class="button button-primary" href="">Reject</a>
+                                <a class="button button-primary"
+                                   href="{% url 'accounts:decision_update' application.applicant.pk application.position.pk 'reject' %}">Reject</a>
                             </td>
                         {% elif application.status %}
-                            <td>Accepted</td>
-                        {% elif application.status %}
-                            <td>Rejected</td>
+                            <td><h5>Accepted</h5></td>
+                        {% elif not application.status %}
+                            <td><h5>Rejected</h5></td>
                         {% endif %}
                     {% endif %}
                     </tr>
