@@ -94,9 +94,22 @@
             {% else %}
             <div class="circle--fluid--cell circle--fluid--secondary">
                 <nav>
-                    <ul class="circle--pill--list">
-                        <li><a class="" href="{% url 'accounts:application' %}">Applications</a></li>
-                        <li><a href="{% url 'accounts:profile' user.id %}">Profile</a></li>
+                    <ul class="">
+                        <li>
+                            <a class="" href="#">
+                                <img src="{% static 'images/notification.svg' %}" height="30px" width="30px" />
+                            </a>
+                        </li>
+                        <li>
+                            <a class="" href="{% url 'accounts:application' %}">
+                                <img src="{% static 'images/app.svg' %}" height="30px" width="30px" />
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'accounts:profile' user.id %}">
+                                <img src="{% static 'images/profile.svg' %}" height="30px" width="30px" />
+                            </a>
+                        </li>
                         <li><a href="{% url 'accounts:signout' %}">Sign Out</a></li>
                     </ul>
                 </nav>

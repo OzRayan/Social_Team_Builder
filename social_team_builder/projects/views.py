@@ -20,7 +20,7 @@ from .mixin import PageTitleMixin
 from accounts.models import UserApplication
 
 
-class ProjectListView(ListView):
+class ProjectListView(PrefetchRelatedMixin, ListView):
     """Projects list view
     :url:
     ^$
@@ -33,13 +33,14 @@ class ProjectListView(ListView):
     template_name = "projects/project_list.html"
     model = models.Project
     context_object_name = "projects"
-    # prefetch_related = ['positions']
+    prefetch_related = ['positions']
 
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
-        positions = models.Position.objects.exclude(apply__status=True)
-        context['positions_list'] = positions.values('name').distinct()
+        positions = models.Position.objects.all().distinct()
+        context['positions'] = positions
+        context['positions_list'] = positions.values('name')
         context['selected'] = self.request.GET.get('filter')
         return context
 
