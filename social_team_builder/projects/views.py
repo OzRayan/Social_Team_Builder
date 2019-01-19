@@ -20,7 +20,7 @@ from .mixin import PageTitleMixin
 from accounts.models import UserApplication
 
 
-class ProjectListView(PrefetchRelatedMixin, ListView):
+class ProjectListView(ListView):
     """Projects list view
     :url:
     ^$
@@ -33,7 +33,11 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
     template_name = "projects/project_list.html"
     model = models.Project
     context_object_name = "projects"
-    prefetch_related = ['positions', ]
+    # prefetch_related = ['positions', ]
+
+    @property
+    def available(self):
+        return self.positions.exclude(apply__status=True)
 
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
@@ -56,8 +60,10 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
         selected_filter = self.request.GET.get('filter')
 
         if for_you:
-            for skill in user_skills.values():
-                queryset = queryset.filter(Q(positions__skill__name=skill))
+            for skill in user_skills:
+                queryset = queryset.filter(
+                    Q(positions__skill__name__icontains=skill['name']))
+                # import pdb; pdb.set_trace()
         if term:
             queryset = queryset.filter(Q(title__icontains=term) |
                                        Q(description__icontains=term))
