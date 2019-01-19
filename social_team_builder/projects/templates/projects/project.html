@@ -44,6 +44,9 @@
                     <h3>{{ position.name }}</h3>
                     <p>{{ position.description|mark_down }}</p>
                     <i>{{ position.time }}</i>
+                    {% for pos in position.skill.all %}
+                        <p>{{ pos.name }}</p>
+                    {% endfor %}
                     {% if user.is_authenticated and position.project.user != request.user %}
                     <div>
                         {% if position not in applied %}

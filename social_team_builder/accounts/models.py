@@ -95,7 +95,7 @@ class Skill(models.Model):
     :fields: - user, name
     :methods: - __str__()
     """
-    user = models.ForeignKey(User, related_name="profile_skills")
+    user = models.ForeignKey(User, default='', related_name="profile_skills")
     name = models.CharField(max_length=50)
 
     def __str__(self):

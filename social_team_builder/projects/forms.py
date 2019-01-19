@@ -1,5 +1,7 @@
 from django import forms
 from . import models
+# noinspection PyUnresolvedReferences
+from accounts.models import Skill
 
 
 class ProjectForm(forms.ModelForm):
@@ -22,6 +24,10 @@ class PositionForm(forms.ModelForm):
     :inherit: - forms.ModelForm
     """
     description = forms.Textarea(attrs={'cols': 28, 'rows': 6})
+    skill = forms.ModelMultipleChoiceField(
+        queryset=Skill.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False)
 
     class Media:
         css = {'all': ('css/order.css',)}
@@ -30,22 +36,22 @@ class PositionForm(forms.ModelForm):
 
     class Meta:
         model = models.Position
-        fields = ['name', 'description', 'time']
+        fields = ['name', 'description', 'time', 'skill']
 
 
 # PositionFormset for PositionInlineFormset
 PositionFormset = forms.modelformset_factory(
     models.Position,
     form=PositionForm,
-    extra=2,
+    extra=3,
 )
 
 PositionInlineFormset = forms.inlineformset_factory(
     models.Project,
     models.Position,
     form=PositionForm,
-    fields=('name', 'description', 'time'),
-    extra=2,
+    fields=('name', 'description', 'time', 'skill'),
+    extra=3,
     formset=PositionFormset,
     min_num=0,
     max_num=5,

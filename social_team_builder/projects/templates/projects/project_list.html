@@ -50,11 +50,6 @@
                 {% else %}
                 <li>N/A</li>
                 {% endif %}
-
-                <!--<li><a class="selected">All Needs</a></li>-->
-                <!--{% for position in positions %}-->
-                <!--<li><a>{{ position.name }}</a></li>-->
-                <!--{% endfor %}-->
             </ul>
         </div>
     </div>
@@ -74,8 +69,6 @@
                 {% for project in projects %}
                 <tr class="clickable-row" data-href="{% url 'projects:detail' project.pk %}">
                         <td><h3>{{ project }}</h3></td>
-{% for pos in positions %}
-                    {% position.project == project %}
                     <td class="circle--cell--right">
                         {% if project.positions.all %}
                                     <span class="secondary-label h3">{{ project.positions.all|join:", " }}</span>
@@ -86,7 +79,6 @@
 
                 </tr>
                 {% endfor %}
-
             </tbody>
         </table>
     </div>

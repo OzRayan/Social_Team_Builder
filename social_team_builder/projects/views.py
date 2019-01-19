@@ -33,14 +33,13 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
     template_name = "projects/project_list.html"
     model = models.Project
     context_object_name = "projects"
-    prefetch_related = ['positions']
+    prefetch_related = ['positions', ]
 
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
-        positions = models.Position.objects.all().distinct()
-        context['positions'] = positions
-        context['positions_list'] = positions.values('name')
+        positions = models.Position.objects.all()
+        context['positions_list'] = positions.values('name').distinct()
         context['selected'] = self.request.GET.get('filter')
         return context
 

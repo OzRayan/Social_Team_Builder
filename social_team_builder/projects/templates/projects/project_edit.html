@@ -53,10 +53,14 @@
                 <ul class="circle--group--list circle--clone--list">
                     <li class="position-formset">
                         {{ position.id }}
+                        {{ position.name.label_tag }}
                         {{ position.name }}
+                        {{ position.description.label_tag }}
                         {{ position.description }}
                         <h5>This input use <strong>MarkDown</strong></h5>
                         {{ position.time }}
+                        {{ position.skill.label_tag }}
+                        {{ position.skill }}
                         <!--<a class="circle&#45;&#45;clone&#45;&#45;add">Add Position</a>-->
                         <!--<a class="circle&#45;&#45;clone&#45;&#45;remove">Remove</a>-->
                         {{ position.DELETE }}

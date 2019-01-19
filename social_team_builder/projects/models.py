@@ -37,6 +37,7 @@ class Position(models.Model):
                                 on_delete=models.CASCADE)
     time = models.CharField(max_length=30)
     skill = models.ManyToManyField('accounts.Skill',
+                                   default='',
                                    related_name='skills')
 
     def __str__(self):
