@@ -48,7 +48,7 @@
                 <li><a href="?filter={{ position.name }}"{% if selected == position.name %} class="selected"{% endif %}>{{ position.name }}</a></li>
                 {% endfor %}
                 {% else %}
-                <li>N/A</li>
+                <li>NO OPEN POSITIONS!</li>
                 {% endif %}
             </ul>
         </div>
@@ -70,10 +70,10 @@
                 <tr class="clickable-row" data-href="{% url 'projects:detail' project.pk %}">
                         <td><h3>{{ project }}</h3></td>
                     <td class="circle--cell--right">
-                        {% if project.available %}
-                            <span class="secondary-label h3">{{ project.positions.available|join:", " }}</span>
+                        {% if project.positions.all %}
+                            <span class="secondary-label h3">{{ project.positions.all|join:", " }}</span>
                         {% else %}
-                            <span class="secondary-label h3">No open position</span>
+                        <span class="secondary-label h3">No position for this project!</span>
                         {% endif %}
                     </td>
 

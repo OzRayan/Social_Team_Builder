@@ -20,7 +20,7 @@ from .mixin import PageTitleMixin
 from accounts.models import UserApplication
 
 
-class ProjectListView(ListView):
+class ProjectListView(PrefetchRelatedMixin, ListView):
     """Projects list view
     :url:
     ^$
@@ -33,17 +33,21 @@ class ProjectListView(ListView):
     template_name = "projects/project_list.html"
     model = models.Project
     context_object_name = "projects"
-    # prefetch_related = ['positions', ]
+    prefetch_related = ['positions', ]
 
-    @property
-    def available(self):
-        return self.positions.exclude(apply__status=True)
+    # @property
+    # def available(self):
+    #     return self.positions.exclude(apply__status=True)
 
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
-        positions = models.Position.objects.all()
+        positions = models.Position.objects.exclude(apply__status=True)
         context['positions_list'] = positions.values('name').distinct()
+        # context['positions'] = positions.filter(
+        #     project__in=context['projects']
+        # ).exclude(apply__status=True)
+        # import pdb; pdb.set_trace()
         context['selected'] = self.request.GET.get('filter')
         return context
 
@@ -150,6 +154,7 @@ class ProjectEditView(LrM, PageTitleMixin,
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get('pk')
+        # noinspection PyUnresolvedReferences
         project = models.Project.objects.filter(pk=pk).first()
         return project
 
@@ -217,12 +222,13 @@ class ProjectDetailView(PrefetchRelatedMixin, DetailView):
         # noinspection PyUnresolvedReferences
         context['positions'] = models.Position.objects.filter(
             project=context['project']).exclude(apply__status=True)
-        # noinspection PyUnresolvedReferences
         if user.is_authenticated():
+            # noinspection PyUnresolvedReferences
             context['applied'] = models.Position.objects.filter(
                 project=context['project'],
                 apply__applicant=user)
         else:
+            # noinspection PyUnresolvedReferences
             context['applied'] = models.Position.objects.filter(
                 project=context['project']
             )
@@ -268,6 +274,7 @@ class ApplyView(LrM, PageTitleMixin, TemplateView):
             position=position,
             defaults={'applicant': user, 'project': project, 'position': position})
         obj.save()
-        return HttpResponseRedirect(reverse_lazy('projects:project_list'))
+        return HttpResponseRedirect(reverse_lazy('projects:detail',
+                                                 kwargs={'pk': project.id}))
 
 

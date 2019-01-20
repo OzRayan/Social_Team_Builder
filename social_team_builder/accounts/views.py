@@ -396,14 +396,23 @@ class DecisionView(LrM, TemplateView):
             if decision == "reject":
                 self.application_update(user, position, False)
                 message = "rejected"
-            #
-            # notify.send(user, recipient=user,
-            #             verb=f'Your application'
-            #                  f' for {position.project} it was {message}',
-            #             decription="")
+
+            notify.send(user, recipient=user, actor=user,
+                        verb=f'Your application'
+                             f' for {position.name} it was {message}',
+                        decription="")
             return HttpResponseRedirect(reverse("accounts:application"))
 
 
+class NotificationsView(LrM, PrefetchRelatedMixin, TemplateView):
+    template_name = 'accounts/notifications.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['unreads'] = self.request.user.notifications.unread()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
