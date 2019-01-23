@@ -127,5 +127,5 @@ class UserApplication(models.Model):
                                   on_delete=models.CASCADE,
                                   related_name='application')
     position = models.ForeignKey('projects.Position', related_name='apply')
-    project = models.ForeignKey('projects.Project')
+    project = models.ForeignKey('projects.Project', related_name='user_projects')
     status = models.NullBooleanField(default=None)

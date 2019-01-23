@@ -274,6 +274,12 @@ class ApplicationView(LrM, PrM, ListView):
     context_object_name = 'applications'
     prefetch_related = ['applicant__projects', ]
 
+    CHOICE = {
+        'New application': None,
+        'Accepted': True,
+        'Rejected': False
+    }
+
     @staticmethod
     def choice(arg):
         if arg == "New application":
@@ -286,12 +292,18 @@ class ApplicationView(LrM, PrM, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationView, self).get_context_data(**kwargs)
+
+        context['applications'] = context['applications'].filter(
+            project__user=self.request.user)
+        status = context['applications'].values('status').distinct()
+        # import pdb; pdb.set_trace()
+
         context['app_list'] = ['New application', 'Accepted', 'Rejected']
         # noinspection PyUnresolvedReferences
         context['projects'] = self.request.user.projects.all()
         # noinspection PyUnresolvedReferences
-        context['skills_list'] = Position.objects.exclude(
-            apply__status=True).values('name').distinct()
+        context['skills_list'] = Position.objects.filter(
+            project__in=context['projects']).values('name').distinct()
 
         context['pro_selected'] = self.request.GET.get('pro_filter')
         context['skill_selected'] = self.request.GET.get('skill_filter')
