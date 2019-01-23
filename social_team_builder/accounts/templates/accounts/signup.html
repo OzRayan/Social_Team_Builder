@@ -12,7 +12,7 @@
         <form method="POST" action="{% url 'accounts:signup' %}" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Sign Up" class="button-primary">
+            <input type="submit" value="Sign Up" class="button nav_button">
         </form>
 
     </div>

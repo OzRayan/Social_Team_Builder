@@ -10,11 +10,11 @@
             <div class="grid-100">
                 {% if user.is_authenticated %}
                 <div class="circle--fluid--cell circle--fluid--primary">
-                    <h2>Projects <i><a href="?for_you=for-you" class="selected"> for you</a></i></h2>
+                    <h2>Projects <i><a href="?for_you=for-you" class="selected ml-3"> for you</a></i></h2>
                 </div>
 
                 <div class="circle--fluid--cell circle--fluid--secondary">
-                    <a class="button button-secondary my-button" href="{% url 'projects:create' %}">
+                    <a class="button nav_button" href="{% url 'projects:create' %}">
                         <!--<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 13 13" style="enable-background:new 0 0 13 13;" xml:space="preserve" class="">-->
                             <!--<polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "/>-->
                         <!--</svg>-->
@@ -43,12 +43,12 @@
             <ul class="circle--filter--list">
 
                 {% if positions_list %}
-                <li><a href="{% url 'projects:project_list' %}" {% if not selected %} class="selected"{% endif %}>All Needs</a></li>
+                <li><a href="{% url 'projects:project_list' %}" {% if not selected %} class="selected"{% else %} class="my-button"{% endif %}>All Needs</a></li>
                 {% for position in positions_list %}
-                <li><a href="?filter={{ position.name }}"{% if selected == position.name %} class="selected"{% endif %}>{{ position.name }}</a></li>
+                <li><a href="?filter={{ position.name }}"{% if selected == position.name %} class="selected"{% else %} class="my-button"{% endif %}>{{ position.name }}</a></li>
                 {% endfor %}
                 {% else %}
-                <li>NO OPEN POSITIONS!</li>
+                <li class="button-del">NO OPEN POSITIONS!</li>
                 {% endif %}
             </ul>
         </div>
@@ -60,20 +60,20 @@
         <table class="u-full-width circle--table">
             <thead>
                 <tr>
-                    <th>Project Title</th>
-                    <th class="circle--cell--right">Project Needs</th>
+                    <th><h3>Project Title</h3></th>
+                    <th class="circle--cell--right d-flex justify-content-end"><h3>Project Needs</h3></th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for project in projects %}
                 <tr class="clickable-row" data-href="{% url 'projects:detail' project.pk %}">
-                        <td><h3>{{ project }}</h3></td>
-                    <td class="circle--cell--right">
+                        <td><h3 class="title d-flex justify-content-start">{{ project }}</h3></td>
+                    <td class="circle--cell--right d-flex justify-content-end">
                         {% if project.positions.all %}
-                            <span class="secondary-label h3">{{ project.positions.all|join:", " }}</span>
+                            <span class="secondary-label h4 pos">{{ project.positions.all|join:", " }}</span>
                         {% else %}
-                        <span class="secondary-label h3">No position for this project!</span>
+                        <span class="secondary-label pos">No position for this project!</span>
                         {% endif %}
                     </td>
 

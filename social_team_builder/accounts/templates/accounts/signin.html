@@ -10,7 +10,7 @@
         <form method="POST" action="{% url 'accounts:signin' %}">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Sign In" class="button-primary">
+            <input type="submit" value="Sign In" class="button nav_button">
         </form>
     </div>
 </div>

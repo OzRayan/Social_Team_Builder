@@ -12,8 +12,8 @@
           <div class="circle--fluid--cell circle--fluid--primary d-flex justify-content-between">
               <h2>{{ page_title }}</h2>
               <div class="d-flex justify-content-end">
-                  <input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">
-                  <a class="button button-text" href="{% url 'projects:project_list' %}">Discard</a>
+                  <input type="submit" form="my_form" value="Save project" class="button nav_button mr-3">
+                  <a class="button nav_button button-discard" href="{% url 'projects:project_list' %}">Discard</a>
               </div>
           </div>
 
@@ -28,60 +28,48 @@
     <form action="" method="POST" id="my_form" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <!-- Page Title, Save and Discard buttons -->
-        <!--<div class="circle&#45;&#45;page&#45;&#45;header circle&#45;&#45;fluid">-->
-            <!--<div class="circle&#45;&#45;fluid&#45;&#45;cell circle&#45;&#45;fluid&#45;&#45;primary d-flex justify-content-between">-->
-                <!--<h2>{{ page_title }}</h2>-->
-                <!--<div>-->
-                    <!--<input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">-->
-                    <!--<a class="button button-text" href="{% url 'projects:project_list' %}">Discard</a>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-
         <!-- Project Title - Description -->
         <div class="grid-70">
-            <h3>Title:</h3>
             <!--<input id="id_title" name="title" type="text" value="{{ form.title }}" required>-->
-            <!--<label for="id_title"></label>-->
+            <h3>Title:</h3>
             <input id="id_title" name="title" type="text" required>
 
             <div class="circle--article--body">
-                <label>{{ form.description.label_tag }}</label>
-                {{ form.description }}
-                <h5>This input use <strong>MarkDown</strong></h5>
-            </div>
+                <h3>Description:</h3>
+                <p>{{ form.description }}<i>This input use <strong>MarkDown</strong></i></p>
+
+                <hr class="my-5">
 
             <!-- Position Formset -->
             <div class="circle--project--positions">
-                <h2>Positions</h2>
+                <h3>Positions</h3>
 
                 {{ position_formset.management_form }}
-                <ul class="circle--clone--list">
+                <ol class="circle--clone--list">
                     {% for position in position_formset %}
                         <li class="position-formset">
                             {{ position.id }}
-                            {{ position.name.label_tag }}
-                            {{ position.name }}
-                            {{ position.description.label_tag }}
-                            {{ position.description }}
+                            <label>{{ position.name.label_tag }}</label>
+                            <p>{{ position.name }}</p>
+                            <label>{{ position.description.label_tag }}</label>
+                            <p>{{ position.description }}<i>This input use <strong>MarkDown</strong></i></p>
 
 
-                            <h5>This input use <strong>MarkDown</strong></h5>
-                            {{ position.time.label_tag }}
-                            {{ position.time }}
-                            {{ position.skill.label_tag }}
-                            {{ position.skill }}
+                            <label >{{ position.time.label_tag }}</label>
+                            <p>{{ position.time }}</p>
+                            <label>{{ position.skill.label_tag }}</label>
+                            <p>{{ position.skill }}</p>
                     <!--<a class="circle&#45;&#45;clone&#45;&#45;add">Add Position</a>-->
                     <!--<a class="circle&#45;&#45;clone&#45;&#45;remove">Remove</a>-->
-                            {{ position.DELETE }}
+                            <p>{{ position.DELETE }}</p>
                             <hr>
                         </li>
-                    <hr>
+                    <hr class="my-5">
                     {% endfor %}
-                </ul>
+                </ol>
             </div>
-            <input type="submit" form="my_form" value="Save project" class="button button-primary icon-on-left">
+            </div>
+            <input type="submit" form="my_form" value="Save project" class="button nav_button">
         </div>
 
         <!-- Time estimate / Applicant Requirements -->

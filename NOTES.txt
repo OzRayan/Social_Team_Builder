@@ -1,19 +1,18 @@
-REQUIRED!   [14.36 from 30] - [84,86%] [ready at: 96.875%]
+REQUIRED!   [27.5 from 29] - [94.82%] [ready at: 96.55%]
 
 1. [x] - Can register for an account
     1. {x} - Complete profile during or immediately after sign up
        {x} - Email validation after sign up
 2. [x] - Can login with valid credentials
 3. [x] - Can log out
-4. [9/10] - Can edit profile
+4. [x] - Can edit profile
     1. {x} - Use Markdown in the about me part of the profile
              This Markdown is rendered on my profile page
-       (2/3) - Password edit with password meter
 5. [x] - Can upload an avatar
-    1. {} - Given tools to edit avatar after upload (resize, crop, rotate, flip)
+    1. {8/10} - Given tools to edit avatar after upload (resize, crop, rotate, flip)
    # 6. [] - Can pick multiple skills for my profile from a list
 6. {x} - Can create custom skills for my profile
-7. [4/5] - Can create multiple positions for a project
+7. [x] - Can create multiple positions for a project
            Positions relate to a particular skill
     1. {x} - Can use Markdown for the position description.
              This Markdown is rendered on the project page
@@ -27,7 +26,7 @@ REQUIRED!   [14.36 from 30] - [84,86%] [ready at: 96.875%]
 10. {x} - Can approve an applicant directly from the list page
    # 11. [] - Can reject an applicant
 11. {x} - Can reject an applicant directly from the list page
-12. [1/10] - Notified when approved/rejected for a position
+12. [x] - Notified when approved/rejected for a position
 13. [x] - Can search by terms that match project name or description.
         Search is case-insensitive.
 14. [x] - Can filter projects by open position skills needed
@@ -36,8 +35,8 @@ REQUIRED!   [14.36 from 30] - [84,86%] [ready at: 96.875%]
 15. [x] - Can apply for a position
     1. {x} - Can't apply for the same position twice
     2. {x} - Filled positions are displayed differently or at all
-16. [4/10] - Additional Design
-17. [3/5] - Documentation
+16. [9/10] - Additional Design
+17. [4/5] - Documentation
 18. [] - Testing: {0%} - profile
                   {0%} - project
                   {0%} - total above 50%

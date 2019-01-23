@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% load extra_tags %}
+{% load static %}
 
 {% block title %}Profile | {{ block.super }}{% endblock %}
 {% block media %}{{ form.media }}{% endblock %}
@@ -9,16 +10,15 @@
 <!-- Action Bar -->
 {% if user.is_authenticated and request.user == profile %}
 <div class="circle--actions--bar action-bar">
-    <div class="bounds">
-        <div class="grid-100">
-        <div class="circle--fluid--cell circle--fluid--primary">
-            <h1>{{ profile }}'s Profile</h1>
-            <p><a href="{% url 'accounts:password_edit' %}" class="ml-4 mt-3 pt-0">(Change Password)</a></p>
-        </div>
-        <div class="circle--fluid--cell circle--fluid--secondary">
-            <a class="button icon-on-left" href="{% url 'accounts:profile_edit' %}">Edit</a>
-        </div>
-
+    <div class="container">
+        <div class="grid-100 d-flex justify-content-between">
+            <div class="circle--fluid--cell circle--fluid--primary d-flex justify-content-between">
+                <h1>{{ profile }}'s Profile</h1>
+            </div>
+            <div class="circle--fluid--cell circle--fluid--secondary d-flex justify-content-between">
+                <a class="button nav_button" href="{% url 'accounts:profile_edit' %}">Edit profile</a>
+                <a href="{% url 'accounts:avatar_edit' %}" class="button nav_button ml-4">Edit avatar</a>
+            </div>
         </div>
     </div>
 </div>
@@ -32,10 +32,10 @@
         ---------------------------------------------------- -->
         <div class="circle--article--body">
             <div class="d-flex justify-content-start">
-                <h1><strong>{{ profile.full_name }}</strong></h1>
+                <h1 class="my-color"><strong>{{ profile.full_name }}</strong></h1>
             </div>
-            <i>{{ profile.email }}</i>
-            <h4>{{ profile.bio|mark_down }}</h4>
+            <i class="user-info">{{ profile.email }}</i>
+            <p>{{ profile.bio|mark_down }}</p>
         </div>
 
         <!-- My projects
@@ -43,21 +43,14 @@
         <h2>Past Projects</h2>
         <table class="u-full-width circle--table">
             <thead>
-                <tr>
-                <th>Project Title</th>
-                <th class="circle--cell--right">Project Needs</th>
-                </tr>
             </thead>
             <tbody>
                 {% if past_projects %}
-                {% for pro in past_projects %}
-                    <tr class="clickable-row" data-href="project.html">
-                        <td><h3>{{ pro }}</h3></td>
-                        <td class="circle--cell--right">
-                            <span class="secondary-label">{{ pro.positions.all|join:", " }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
+                    {% for pro in past_projects %}
+                        <tr class="clickable-row" data-href="project.html">
+                            <td><h3 class="my-button">{{ pro }}</h3></td>
+                        </tr>
+                    {% endfor %}
                 {% else %}
                     <tr><td><h3>N/A</h3></td></tr>
                 {% endif %}
@@ -70,11 +63,12 @@
         <!-- Avatar
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
         <div class="circle--secondary--module">
-            <div class="card pr-auto" style="width: 30rem;">
+            <div class="card pr-auto" style="max-width: 167px;">
             {% if profile.avatar %}
                 <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
             {% else %}
-                <img class="card-img-top" src="" alt="Card image cap">
+                <img class="card-img-top" src="{% static 'images/avatar.png' %}"
+                     alt="Card image cap" height="220px" style="max-width: 167px;">
             {% endif %}
             </div>
         </div>
@@ -100,7 +94,7 @@
                 {% if my_projects %}
                     {% for project in my_projects %}
                         <li>{{ project.name }}</li>
-                        <a href="{{ project.url }}">{{ project.url }}</a>
+                        <li><a href="{{ project.url }}">{{ project.url }}</a></li>
                     {% endfor %}
                 {% endif %}
             </ul>

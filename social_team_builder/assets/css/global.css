@@ -2092,7 +2092,7 @@ input[type="email"].circle--input--h6, input[type="number"].circle--input--h6, i
   width: 28px;
   height: 28px;
   display: inline-block;
-  box-shadow: 0 0 0 4px #fff inset;
+  box-shadow: 0 0 0 4px #03C8FF inset;
   border-radius: 50px;
   position: relative;
   -webkit-transition: box-shadow 0.2s;
@@ -2103,5 +2103,5 @@ input[type="email"].circle--input--h6, input[type="number"].circle--input--h6, i
 }
 /* line 13, ../sass/global.sass */
 .logo:hover {
-  box-shadow: 0 0 0 15px #fff inset;
+  box-shadow: 0 0 0 15px #03C8FF inset;
 }

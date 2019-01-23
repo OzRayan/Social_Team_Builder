@@ -20,14 +20,14 @@
 
     <!-- FONTS
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,500' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Work+Sans:500,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Cousine' rel='stylesheet' type='text/css'>
 
     <!-- CSS
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <!-- Custom CSS -->
-    <!--<link rel="stylesheet" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/password.css' %}">
     {% block css %}{% endblock %}
 
@@ -47,27 +47,31 @@
     {% block media %}{% endblock %}
 
 </head>
-<body class="body">
-    <header class="circle--header custom-navbar">
-        <div class="bounds">
+<body class="body"  style="position: relative;">
+    <header class="circle--header custom-navbar position">
+        <div class="bounds d-flex justify-content-between">
 
             <!-- Home
             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-            <div class="circle--fluid">
+            <div class="circle--fluid--cell circle--fluid--secondary grid-10">
                 <div class="circle--fluid--cell">
-                    <h1 class="hide-text circle--logo">H
-                        <a class="logo" href="{% url 'projects:project_list' %}"></a>me
-                </h1>
+                    <h1 class="my-logo circle--logo d-flex justify-content-between" style="font-size: 4rem;">H
+                        <a class="logo mx-1 mt-3" href="{% url 'projects:project_list' %}"></a>me
+                    </h1>
+                </div>
             </div>
-            <div class="circle--fluid--cell circle--fluid--primary">
-                <div class="circle--search grid-75 d-flex justify-content-end">
+
+            <!-- Search -->
+            <div class="circle--fluid--cell circle--fluid--primary d-flex justify-content-end">
+                <div class="circle--search grid-60">
                     <form method="GET" action="{% url 'projects:project_list' %}">
                         <input class="form-control mr-sm-2 h5 frame"
                            type="search"
                            placeholder="Search..."
                            aria-label="Search"
                            name="q"
-                            value="{{ term }}">
+                           value="{{ term }}" autocomplete="false">
+
                         <button type="submit">
                             <svg version="1.1" class="search"
                                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -80,49 +84,43 @@
                 </div>
             </div>
 
-            <!-- Navigation bar
-            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-            {% if not user.is_authenticated %}
-            <div class="circle--fluid--cell circle--fluid--secondary">
-                <nav>
-                    <ul class="circle--pill--list">
-                        <li><a href="{% url 'accounts:signup' %}">Sign Up</a></li>
-                        <li><a href="{% url 'accounts:signin' %}">Sign In</a></li>
-                    </ul>
-                </nav>
-            </div>
-            {% else %}
-            <div class="circle--fluid--cell circle--fluid--secondary">
-                <nav>
-                    <ul class="">
-                        <li>
-                            <a class="" href="{% url 'accounts:own_notifications' %}">
-                                <img src="{% static 'images/notification.svg' %}" height="30px" width="30px" />
-                            </a>
-                        </li>
-                        <li>
-                            <a class="" href="{% url 'accounts:application' %}">
-                                <img src="{% static 'images/app.svg' %}" height="30px" width="30px" />
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'accounts:profile' user.id %}">
-                                <img src="{% static 'images/profile.svg' %}" height="30px" width="30px" />
-                            </a>
-                        </li>
-                        <li><a href="{% url 'accounts:signout' %}">Sign Out</a></li>
-                    </ul>
-                </nav>
-            </div>
-            {% endif %}
-            </div>
+                <!-- Navigation bar
+                –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+                {% if not user.is_authenticated %}
+                    <div class="circle--fluid--cell circle--fluid--secondary">
+                        <nav>
+                            <ul class="circle--pill--list">
+                                <li><a class="button nav_button" href="{% url 'accounts:signup' %}">Sign Up</a></li>
+                                <li><a class="button nav_button" href="{% url 'accounts:signin' %}">Sign In</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                {% else %}
+                    <div class="circle--fluid--cell circle--fluid--secondary">
+                        <nav>
+                            <ul class="circle--pill--list">
+                                <li><a class="button nav_button" href="{% url 'accounts:own_notifications' %}">
+                                    <img src="{% static 'images/notification.svg' %}" height="21px" width="21px" />
+                                </a></li>
+                                <li><a class="button nav_button" href="{% url 'accounts:profile' user.id %}">
+                                    <img src="{% static 'images/profile.svg' %}" height="21px" width="21px" />
+                                </a></li>
+                                <li><a class="button nav_button" href="{% url 'accounts:application' %}">
+                                    <img src="{% static 'images/app.svg' %}" height="21px" width="21px" />
+                                </a></li>
+                                <li><a class="button nav_button fit" href="{% url 'accounts:signout' %}">Sign Out</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
+
         </div>
     </header>
 
     <!-- Message if block for all error or success messages
     -------------------------------------------------- -->
     {% if messages %}
-    <div class="messages centered grid-50">
+    <div class="centered grid-100 my-message">
         {% for message in messages %}
             <div class="alert {% if message.tags == 'success' %}
                         alert-{{ message.tags }}
@@ -132,7 +130,7 @@
                         alert-{{ message.tags }}
                         {% elif message.tags == 'warning' %}
                         alert-{{ message.tags }}
-                        {% endif %} text-center alert-dismissible " role="alert">
+                        {% endif %} text-center alert-dismissible h3" role="alert">
                 <strong>{{ message|safe }}</strong>
             </div>
         {% endfor %}
@@ -142,9 +140,31 @@
     <!-- Content Block
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     {% block content %}{% endblock %}
+
+    <!-- Back to top button -->
+    <button class="btn btn-outline-secondary" onclick="topFunction()" id="myBtn">Back to top</button>
+        <script>
+            window.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 1000) {
+                    document.getElementById("myBtn").style.display = "block";
+                } else {
+                    document.getElementById("myBtn").style.display = "none";
+                }
+            }
+
+            function topFunction() {
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
+        </script>
+
     <!-- Javascript Block
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script>$(".alert").fadeOut(11000 );</script>
+
     {% block javascript %}{% endblock %}
-<script>$(".alert").fadeOut(11000 );</script>
+
 </body>
 </html>

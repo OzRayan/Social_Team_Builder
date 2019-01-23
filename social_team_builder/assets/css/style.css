@@ -1,6 +1,52 @@
 .body {
     color: #eaeaea;
-    background-color: #231F26;
+    background-color: #272629;
+}
+
+.position {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14%;
+}
+
+h1, h2, h3, h4, h5 {
+    color: #999! important;
+}
+
+.my-logo {
+    color: transparent! important;
+    transition: color 500ms ease-in-out,
+                text-shadow 300ms ease-in-out;
+}
+
+.my-logo:hover {
+    color: #03C8FF! important;
+    text-shadow: 0 1px 0 #004052,
+                 1px 2px 1px #005269,
+                 2px 3px 2px #00627D,
+                 3px 4px 3px #007A9C,
+                 4px 5px 4px #009BC7,
+                 6px 6px 6px rgba(0,0,0,.1),
+                 5px 0 5px rgba(0,0,0,.1),
+                 3px 1px 3px rgba(0,0,0,.3),
+                 5px 3px 5px rgba(0,0,0,.2),
+                 7px 5px 8px rgba(0,0,0,.25),
+                 8px 8px 8px rgba(0,0,0,.2);
+
+}
+
+.selected {
+    color: #03C8FF !important;
+}
+
+.my-message {
+    position: fixed;
+    top: 8.2rem;
+    width: 100%;
+    z-index: 2;
 }
 
 a:hover {
@@ -10,13 +56,71 @@ a:hover {
     list-style: none;
 }
 
+p {
+    color: #bbb;
+}
+
+label {
+    color: #a7a7a7;
+    font-size: 1.2rem;
+
+}
+
+.alert-danger, .alert-error, .alert-success, .alert-warning, .alert-info {
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+.alert-success {
+    color: #00ED1C !important;
+}
+
+.alert-info {
+    color: #1BDDE0 !important;
+}
+
+.alert-warning {
+    color: #FFD000 !important;
+}
+
+.alert-danger, .alert-error {
+    color: #FF0059 !important;
+}
+
+
+.button, .nav_button {
+    border-radius: 50px! important;
+    box-shadow: 8px 8px 10px -5px black! important;
+    background-color: #18151A! important;
+    color: #bbb! important;
+    padding: 17px 22px 17px 22px;
+    transition: color 400ms ease-in-out,
+                background-color 400ms ease-in-out,
+                box-shadow 400ms ease-in-out;
+}
+
+/* Custom navbar buttons */
+
+.nav_button:hover, nav_button:focus {
+    outline: 0! important;
+    border: none! important;
+    box-shadow: 0 0 0 0 transparent! important;
+    background-color: #bbb! important;
+    color: #18151A! important;
+}
+
+.button-inactive {
+    background-color: #272229! important;
+    box-shadow: 0 0 0 0 transparent! important;
+    color: #18151A! important;
+}
+
 .action-bar {
     background-color: #1F1C21;
 }
 
 .my-button {
-    color: #EAEAEA;
-    box-shadow: 0 0 0 2px #EAEAEA inset;
+    color: #EAEAEA! important;
 }
 
 .my-button-del {
@@ -31,11 +135,21 @@ a:hover {
 }
 
 .my-color {
-    color:#3098FF;
+    color:#3098FF !important;
 }
 
-.my-color-del {
-    color: #FF005D;
+.button-del {
+    color: #EB00A0! important;
+}
+
+.button-discard {
+    color: #EB00A0! important;
+}
+
+.button-accept {
+    font-size: 1.5rem !important;
+    padding: 10px;
+    margin: 2px;
 }
 
 .custom-navbar {
@@ -47,6 +161,106 @@ code {
     border: 0px solid #3098FF;
     color: #C000FF;
 }
+
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="url"],
+textarea {
+    background-color: #1F1C21! important;
+    color: white! important;
+    border: 1px solid #272629! important;
+    border-radius: 20px;
+    box-shadow: 4px 4px 4px 3px #0D0D0D inset! important;
+}
+
+textarea {
+    border-radius: 25px;
+}
+
+input[type="search"],
+input[type="search"]:focus,
+input[type="search"]:active {
+    background: #1F1C21! important;
+    border: 0 solid red! important;
+    box-shadow: 4px 4px 4px 2px black inset! important;
+    border-radius: 40px;
+    color: white! important;
+}
+
+li, li::before, li::after {
+    list-style: none! important;
+}
+
+hr {
+    border-top: 1px solid #0F0024 !important;
+}
+
+.title {
+    color: #1957FF! important;
+}
+
+.pos {
+    color: #ddd! important;
+}
+
+th, td {
+    border-bottom: 0px solid #0F0024 !important;
+}
+
+.user-info {
+    color: #FFC119! important;
+}
+
+.accepted {
+    color: #13BA39! important;
+}
+
+.rejected {
+    color: #BA1394! important;
+}
+
+.errorlist {
+    color: #FF0059 !important;
+}
+
+.card-img-top, .card {
+    border: 0 solid transparent!important;
+    border-radius: 5px !important;
+    color: transparent! important;
+    background-color: #1F1C21 !important;
+}
+
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 45%;
+  z-index: 99;
+  font-size: 18px;
+  border: 0px solid transparent !important;
+  box-shadow: 8px 8px 10px -5px black! important;;
+  background-color: #1F1C21;
+  outline: none;
+  color: #555;
+  padding-bottom: 14px;
+  cursor: pointer;
+  border-radius: 40px;
+  max-height: 36px;
+  max-width: 13rem;
+  transition: color 400ms ease-in-out,
+                background-color 400ms ease-in-out,
+                box-shadow 400ms ease-in-out;
+}
+
+#myBtn:hover {
+  background-color: #EAEAEA;
+  color: #1F1C21;
+  box-shadow: 0 0 0 0 transparent! important;
+}
+
 
 /* #7B00E0 purple
 e83e8c markdown text*/

@@ -11,8 +11,8 @@
 <div class="circle--actions--bar action-bar">
     <div class="bounds">
         <div class="grid-100">
-            <a class="button my-button" href="{% url 'projects:edit' project.pk %}">Edit Project</a>
-            <a class="button my-button-del" href="{% url 'projects:delete' project.pk %}">Delete Project</a>
+            <a class="button nav_button" href="{% url 'projects:edit' project.pk %}">Edit Project</a>
+            <a class="button nav_button button-del" href="{% url 'projects:delete' project.pk %}">Delete Project</a>
         </div>
     </div>
 </div>
@@ -21,8 +21,10 @@
 <div class="bounds circle--page circle--article">
     <div class="grid-70">
         <div class="circle--article--header">
-            <h4 class="circle--article--section">Project</h4>
-            <h1 class="circle--article--title">{{ project.title }}</h1>
+            <div class="d-flex justify-content-start">
+                <h2 class="circle--article--title pt-2">Project: </h2>
+                <h1 class="circle--article--title mx-4 pb-5"> {{ project.title }}</h1>
+            </div>
             <p class="circle--article--byline">
                 Project Owner: <a class="my-color" href="{% url 'accounts:profile' project.user.id %}">
                 {{ project.user.full_name }}</a>
@@ -36,53 +38,50 @@
         <div class="circle--project--positions">
         <h2>Positions</h2>
 
-        <ol class="circle--group--list">
+        <ul class="circle--group--list">
+            {% with request.user as self_user %}
             {% for position in positions %}
-            <div class="d-flex justify-content-betwwen">
+            <div class="d-flex justify-content-between">
 
                 <li>
-                    <h3>{{ position.name }}</h3>
+                    <p><strong>{{ position.name }}</strong></p>
                     <p>{{ position.description|mark_down }}</p>
                     <i>{{ position.time }}</i>
-                    {% for pos in position.skill.all %}
-                        <p>{{ pos.name }}</p>
-                    {% endfor %}
-                    {% if user.is_authenticated and position.project.user != request.user %}
-                    <div>
-                        {% if position not in applied %}
-                            <a class="button button-primary" href="{% url 'projects:apply' position.project.id position.id %}">Apply</a>
-                        {% else %}
-                            <button disabled class="button button-inactive">Applied</button>
-                        {% endif %}
-                    </div>
+                    <p>{{ position.skill.all|join:" | " }}</p>
+                    {% if position.project.user != self_user %}
+                        <div>
+                            {% if position not in applied %}
+                                <a class="button nav_button" href="{% url 'projects:apply' position.project.id position.id %}">Apply</a>
+                            {% else %}
+                                <button disabled class="button button-inactive">Applied</button>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </li>
             </div>
             {% endfor %}
+            {% endwith %}
 
-        </ol>
+        </ul>
         </div>
 
     </div>
 
     <div class="grid-25 grid-push-5">
-      <div class="circle--secondary--module">
-        <h3>Project Needs</h3>
-        <ul class="circle--link--list">
-          <li><a>{{ positions.all|join:", " }}</a></li>
-          <!--<li><a>Designer</a></li>-->
-        </ul>
-      </div>
+        <div class="circle--secondary--module">
+            <h3>Project Needs</h3>
+            <p>{{ positions.all|join:", " }}</p>
+        </div>
 
-      <div class="circle--secondary--module">
-        <h3>Project Timeline</h3>
-        <p>{{ project.time_estimate }}</p>
-      </div>
+        <div class="circle--secondary--module">
+            <h3>Project Timeline</h3>
+            <p>{{ project.time_estimate }}</p>
+        </div>
 
-      <div class="circle--secondary--module">
-        <h3>Applicant Requirements</h3>
-        <p>{{ project.requirements|safe }}</p>
-      </div>
+        <div class="circle--secondary--module">
+            <h3>Applicant Requirements</h3>
+            <p>{{ project.requirements|safe }}</p>
+        </div>
 
     </div>
   </div>

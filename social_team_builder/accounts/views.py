@@ -15,12 +15,13 @@ from django.template.loader import render_to_string
 from django.views.generic import (CreateView, FormView, RedirectView,
                                   TemplateView, UpdateView, ListView)
 
-from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
+from braces.views import PrefetchRelatedMixin as PrM
 from notify.signals import notify
+from PIL import Image
 
 from . import forms
 from . import models
-from .mixins import PageTitleMixin
+from .mixins import PageTitleMixin as PtM
 # noinspection PyUnresolvedReferences
 from projects.models import Position, Project
 
@@ -55,7 +56,7 @@ class ValidateView(RedirectView):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.save()
             login(request, user)
-            messages.info(request, "Your account is now active. "
+            messages.success(request, "Your account is now active. "
                                    "Complete your registration!")
         else:
             messages.warning(request, "Activation link is invalid.")
@@ -83,7 +84,7 @@ class SignInView(FormView):
     def form_valid(self, form):
         user, request = form.get_user(), self.request
         login(request, user)
-        messages.success(request, f'Welcome {user}')
+        messages.success(request, 'Welcome {}'.format(user))
         return super().form_valid(form)
 
 
@@ -130,13 +131,11 @@ class SignUpView(CreateView):
             email = EmailMessage('Activate your account.',
                                  message, to=[email_to])
             email.send()
-            messages.success(self.request, "Check email for user activation!")
-            return redirect(self.success_url)
+            messages.info(self.request, "Check email for user activation!")
+            return HttpResponseRedirect(self.success_url)
 
 
-class UserProfileView(PageTitleMixin,
-                      PrefetchRelatedMixin,
-                      TemplateView):
+class UserProfileView(PtM, PrM, TemplateView):
     """User profile view
     :url:
     ^accounts/profile/(?P<pk>\d+)/$
@@ -147,9 +146,9 @@ class UserProfileView(PageTitleMixin,
               - get_context_data()
     """
     template_name = "accounts/profile.html"
-    model = get_user_model()
+    # model = get_user_model()
     context_object_name = "profile"
-    prefetch_related = ['my_projects', 'profile_skills']
+    prefetch_related = ['profile_skills', 'my_projects', 'projects', 'positions']
     #
     # def get_object(self, queryset=None):
     #     return self.request.user
@@ -170,10 +169,11 @@ class UserProfileView(PageTitleMixin,
         context['skills'] = context['profile'].profile_skills.all()
         context['my_projects'] = context['profile'].my_projects.all()
         context['past_projects'] = context['profile'].projects.all()
+        # import pdb; pdb.set_trace()
         return context
 
 
-class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
+class UserProfileEditView(LrM, PtM, UpdateView):
     """User profile edit view
     :url:
     ^accounts/profile/edit/$
@@ -192,7 +192,7 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
     context_object_name = "profile"
 
     def get_page_title(self):
-        return f'Update {self.object}'
+        return 'Update {}'.format(self.object)
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -215,7 +215,7 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         user = self.get_object()
         form = forms.UserProfileForm(
-            self.request.POST, request.FILES, instance=user)
+            request.POST, request.FILES, instance=user)
         # noinspection PyUnresolvedReferences
         skill_formset = forms.SkillInlineFormSet(
             request.POST,
@@ -235,7 +235,6 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
             profile_form = form.save(commit=False)
             profile_form.user = user
             profile_form.save()
-            # print(dir(skill_formset))
 
             skills = skill_formset.save(commit=False)
             projects = project_formset.save(commit=False)
@@ -264,68 +263,12 @@ class UserProfileEditView(LrM, PageTitleMixin, UpdateView):
             return HttpResponseRedirect(reverse_lazy("accounts:profile",
                                                      kwargs={'pk': request.user.id}))
 
-        return redirect(reverse('accounts:profile_edit',
-                                {'form': form,
-                                 'skill_formset': skill_formset,
-                                 'project_formset': project_formset}))
+        return HttpResponseRedirect(reverse('accounts:profile_edit',
+                                            {'skill_formset': skill_formset,
+                                             'project_formset': project_formset}))
 
 
-# This view still needs work!!!
-# #############################
-class PasswordEditView(LrM, PageTitleMixin, UpdateView):
-    # model = get_user_model()
-    form_class = forms.PasswordForm
-    # success_url = reverse_lazy("accounts:profile")
-    template_name = "accounts/password_edit.html"
-    page_title = "Update Password"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = self.get_form()
-        return context
-
-    def get_object(self, queryset=None):
-        return self.request.user
-
-    def post(self, request, *args, **kwargs):
-        user = self.get_object()
-        form = forms.PasswordForm(data=request.POST, request=request)
-        if form.is_valid():
-            if user.check_password(form.cleaned_data.get('old')):
-                user.set_password(form.cleaned_data.get('new'))
-                user.save()
-                update_session_auth_hash(self.request, user)
-                return HttpResponseRedirect(reverse_lazy('acounts:profile'))
-        return HttpResponseRedirect(reverse("accounts:password_edit"))
-
-
-# @login_required
-# # def password_edit_view(request):
-# #     """password_edit_view prepare user data for form, check password auth
-# #     :decorator: - login_required
-# #     :input: - request
-# #     :returns: - HttpResponseRedirect profile detail
-# #               - render template(accounts/password_edit.html) with form
-# #     """
-# #     user = request.user
-# #     form = forms.PasswordForm(request=request)
-# #     if request.method == "POST":
-# #         form = forms.PasswordForm(data=request.POST, request=request)
-# #         if form.is_valid():
-# #             if user.check_password(form.cleaned_data.get('old')):
-# #                 user.set_password(form.cleaned_data.get('new'))
-# #                 user.save()
-# #                 update_session_auth_hash(request, user)
-# #                 messages.success(request, "Password saved!")
-# #                 return HttpResponseRedirect('accounts/profile/')
-# #
-# #             else:
-# #                 messages.error(request, "Old password incorrect.")
-# #
-# #     return render(request, 'accounts/password_edit.html', {'form': form})
-
-
-class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
+class ApplicationView(LrM, PrM, ListView):
     template_name = "accounts/applications.html"
     model = models.UserApplication
     context_object_name = 'applications'
@@ -349,6 +292,7 @@ class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
         # noinspection PyUnresolvedReferences
         context['skills_list'] = Position.objects.exclude(
             apply__status=True).values('name').distinct()
+
         context['pro_selected'] = self.request.GET.get('pro_filter')
         context['skill_selected'] = self.request.GET.get('skill_filter')
         context['app_selected'] = self.request.GET.get('app_filter')
@@ -360,7 +304,6 @@ class ApplicationView(LrM, PrefetchRelatedMixin, ListView):
         pro_term = self.request.GET.get('pro_filter')
         skill_term = self.request.GET.get('skill_filter')
         user = models.User.objects.all().exclude(pk=self.request.user.id)
-        print(user)
 
         if app_term:
             queryset = queryset.filter(status=self.choice(app_term))
@@ -387,8 +330,8 @@ class DecisionView(LrM, TemplateView):
         position_pk = self.kwargs.get('pos_pk')
         decision = self.kwargs.get('decision')
         user = models.User.objects.get(pk=user_pk)
-        position = Position.objects.filter(pk=position_pk)
-
+        position = Position.objects.filter(pk=position_pk).first()
+        message = ''
         if user and position:
             if decision == "accept":
                 self.application_update(user, position, True)
@@ -398,13 +341,12 @@ class DecisionView(LrM, TemplateView):
                 message = "rejected"
 
             notify.send(user, recipient=user, actor=user,
-                        verb=f'Your application'
-                             f' for {position.name} it was {message}',
+                        verb='Your application for {} it was {}'.format(position.name, message),
                         decription="")
             return HttpResponseRedirect(reverse("accounts:application"))
 
 
-class NotificationsView(LrM, PrefetchRelatedMixin, TemplateView):
+class NotificationsView(LrM, PrM, TemplateView):
     template_name = 'accounts/notifications.html'
 
     def get_context_data(self, **kwargs):
@@ -416,3 +358,112 @@ class NotificationsView(LrM, PrefetchRelatedMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
+# Still need fixing!!
+#######################
+class AvatarView(LrM, UpdateView):
+    form_class = forms.AvatarForm
+    template_name = "accounts/avatar_edit.html"
+    model = get_user_model()
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['form'] = self.get_form()
+    #     return context
+
+    def post(self, request, *args, **kwargs):
+        user = self.get_object()
+        form = forms.AvatarForm(
+            request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('accounts:avatar_edit'))
+        # else:
+        #     form = forms.AvatarForm()
+        return HttpResponseRedirect(reverse('accounts:avatar_edit',
+                                            {'form': form}))
+
+
+# class AvatarEditView(LrM, TemplateView):
+#     template_name = "accounts/avatar_edit.html"
+#
+#     @staticmethod
+#     def edit(path, arg):
+#         with Image.open(path) as image:
+#             image = image.transpose(arg)
+#             image.save(path)
+#
+#     def get(self, request, *args, **kwargs):
+#         action = self.kwargs.get('action')
+#         if action == 'left':
+#             self.edit(request.user.avatar.path, Image.ROTATE_90)
+#         if action == 'right':
+#             self.edit(request.user.avatar.path, Image.ROTATE_270)
+#         if action == 'up':
+#             self.edit(request.user.avatar.path, Image.FLIP_TOP_BOTTOM)
+#         if action == 'side':
+#             self.edit(request.user.avatar.path, Image.FLIP_LEFT_RIGHT)
+#         return HttpResponseRedirect(reverse('accounts:avatar_edit'))
+
+
+class RotateRightView(LrM, TemplateView):
+    template_name = "accounts/avatar_edit.html"
+
+    def get(self, request, *args, **kwargs):
+        with Image.open(request.user.avatar.path) as image:
+            image = image.transpose(Image.ROTATE_270)
+            image.save(request.user.avatar.path)
+        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
+
+
+class RotateLeftView(LrM, TemplateView):
+    template_name = "accounts/avatar_edit.html"
+
+    def get(self, request, *args, **kwargs):
+        with Image.open(request.user.avatar.path) as image:
+            image = image.transpose(Image.ROTATE_90)
+            image.save(request.user.avatar.path)
+        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
+
+
+class FlipSideView(LrM, TemplateView):
+    template_name = "accounts/avatar_edit.html"
+
+    def get(self, request, *args, **kwargs):
+        with Image.open(request.user.avatar.path) as image:
+            image = image.transpose(Image.FLIP_LEFT_RIGHT)
+            image.save(request.user.avatar.path)
+        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
+
+
+class FlipUpView(LrM, TemplateView):
+    template_name = "accounts/avatar_edit.html"
+
+    def get(self, request, *args, **kwargs):
+        with Image.open(request.user.avatar.path) as image:
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+            image.save(request.user.avatar.path)
+        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
+
+
+@login_required
+def crop_image(request):
+    form = forms.AvatarCropForm(user=request.user)
+    with Image.open(request.user.avatar.path) as image:
+        width, height = image.size
+        size = str(width), str(height)
+        if request.method == 'POST':
+            form = forms.AvatarCropForm(user=request.user, data=request.POST)
+            if form.is_valid():
+                box = (int(form.cleaned_data['left']),
+                       int(form.cleaned_data['top']),
+                       int(form.cleaned_data['right']),
+                       int(form.cleaned_data['bottom']),
+                       )
+                image = image.crop(box)
+                image.save(request.user.avatar.path)
+                return redirect('accounts:avatar_edit')
+        return render(request, 'accounts/avatar_edit.html',
+                      {'form': form, 'size': size})

@@ -3,30 +3,38 @@
 {% block title %}Notifications{% endblock %}
 {% block content %}
 
-<div class="circle--actions--bar">
-    <nav class="bounds">
-      <ul class="circle--pill--list">
-          <h2>Recent Notifications</h2>
-      </ul>
-    </nav>
-  </div>
-
-  <div class="bounds circle--page">
-
-    <div class="grid-70">
-
-      <div class="circle--article--body">
-      {% if unreads %}
-        {% for message in unreads %}
-            <p>{{ message.verb }}</p>
-            <p><strong>{{ message.timestamp }}</strong></p>
-            <hr/>
-          {% endfor %}
-      {% else %}
-          <p>No messages to display.</p>
-      {% endif %}
-      </div>
+<div class="circle--actions--bar action-bar">
+    <div class="bounds">
+        <div class="grid-100">
+            <h2>Notifications</h2>
+        </div>
     </div>
+</div>
+<div class="bounds circle--page">
+    <div class="grid-70 grid-push-5">
+        <table class="u-full-width circle--table">
+            <thead>
+                <tr>
+                    <th><h3>Notifications</h3></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {% if unreads %}
+                                {% for message in unreads %}
+                                <p>{{ message.verb }}</p>
+                                <p><strong>{{ message.timestamp }}</strong></p>
+                                <hr/>
+                            {% endfor %}
+                        {% else %}
+                            <p>No messages to display.</p>
+                        {% endif %}
+                    </td>
+                </tr>
 
-  </div>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

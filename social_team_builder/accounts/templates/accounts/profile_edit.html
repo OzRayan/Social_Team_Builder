@@ -6,47 +6,59 @@
 
 {% block content %}
 
+<div class="circle--actions--bar action-bar">
+    <div class="container">
+        <div class="grid-100 d-flex justify-content-between">
+            <div class="circle--fluid--cell circle--fluid--primary">
+                <h2>{{ page_title }}</h2>
+            </div>
+            <div class="circle--fluid--cell circle--fluid--secondary">
+                <input type="submit" form="my_form" value="Save profile" class="button nav_button">
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- PROFILE FORM -->
 <div class="bounds circle--page">
     <form action="" method="POST" id="my_form" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="circle--page--header circle--fluid">
-            <div class="circle--fluid--cell circle--fluid--primary">
-                <h2>{{ page_title }}</h2>
-            </div>
+        <!--<div class="circle&#45;&#45;page&#45;&#45;header circle&#45;&#45;fluid">-->
+            <!--<div class="circle&#45;&#45;fluid&#45;&#45;cell circle&#45;&#45;fluid&#45;&#45;primary">-->
+                <!--<h2>{{ page_title }}</h2>-->
+            <!--</div>-->
 
-            <div class="circle--fluid--cell circle--fluid--secondary">
-                <input type="submit" form="my_form" value="Save profile" class="button button-primary icon-on-left">
-            </div>
-        </div>
+            <!--<div class="circle&#45;&#45;fluid&#45;&#45;cell circle&#45;&#45;fluid&#45;&#45;secondary">-->
+                <!--<input type="submit" form="my_form" value="Save profile" class="button nav_button">-->
+            <!--</div>-->
+        <!--</div>-->
 
         <div class="grid-70">
             <div class="d-flex justify-content-between">
                 <div class="grid-40">
-                    <label for="id_username">Username:</label>
-                    <input id="id_username" name="username" type="text" value="{{ form.username.value }}" required>
+                    <label>Username:</label>
+                    <input name="username" type="text" value="{{ form.username.value }}" required>
                 </div>
                 <div class="grid-40">
-                    <label for="id_email">Email:</label>
-                    <input id="id_email" name="email" type="text" value="{{ form.email.value }}" required>
+                    <label>Email:</label>
+                    <input name="email" type="text" value="{{ form.email.value }}" required>
                 </div>
             </div>
 
             <div class="d-flex justify-content-between">
                 <div class="grid-40">
-                    <label for="id_first_name">First name:</label>
-                    <input id="id_first_name" name="first_name" type="text" value="{{ form.first_name.value }}" required>
+                    <label >First name:</label>
+                    <input name="first_name" type="text" value="{{ form.first_name.value }}" required>
                 </div>
                 <div class="grid-40">
-                    <label for="id_last_name">Last name:</label>
-                    <input id="id_last_name" name="last_name" type="text" value="{{ form.last_name.value }}" required>
+                    <label>Last name:</label>
+                    <input name="last_name" type="text" value="{{ form.last_name.value }}" required>
                 </div>
             </div>
 
             <div class="circle--article--body">
                 <label>{{ form.bio.label_tag }}</label>
-                <h4>{{ form.bio }}</h4>
-                <h5>This input use <strong>MarkDown</strong></h5>
+                <p>{{ form.bio }}<i>This input use <strong>MarkDown</strong></i></p>
             </div>
 
         </div>
@@ -55,18 +67,16 @@
 
             <!-- Avatar -->
             <div class="circle--secondary--module">
-                <label for="id_avatar">Current avatar:</label>
+                <label>Current avatar:</label>
                 <div class="card pr-auto" style="width: 30rem;">
                     {% if profile.avatar %}
                     <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
-                    <p class="text-success">{{ form.avatar.value }}</p>
-
                     {% else %}
                     <img class="card-img-top" src="" alt="Card image cap">
                     {% endif %}
                 </div>
-                <a class="button">Upload avatar
-                    <input id="id_avatar" name="avatar" type="file">
+                <a class="button nav_button mt-5">Upload avatar
+                    <input name="avatar" type="file">
                 </a>
             </div>
 
@@ -79,10 +89,10 @@
 
                         <li class="skill-formset">
                         {{ skill.id }}
-                        {{ skill.name }}
+                        <p>{{ skill.name }}</p>
                         <!--<a class="circle&#45;&#45;clone&#45;&#45;add">Add Skill</a>-->
                         <!--<a class="circle&#45;&#45;clone&#45;&#45;remove">Remove</a>-->
-                        {{ skill.DELETE }}
+                        <p>{{ skill.DELETE }}</p>
                         </li>
                 {% endfor %}
                 </ul>
@@ -96,19 +106,19 @@
                     {{ project.id }}
                     <ul class="circle--clone--list">
                         <li class="project-formset">
-                        {{ project.name }}
-                        {{ project.url }}
+                            <label>{{ project.name.label_tag }}</label>
+                            <p>{{ project.name }}</p>
+                            <label>{{ project.url.label_tag }}</label>
+                            <p>{{ project.url }}</p>
                         <!--<a class="circle&#45;&#45;clone&#45;&#45;add">Add Skill</a>-->
                         <!--<a class="circle&#45;&#45;clone&#45;&#45;remove">Remove</a>-->
-                        {{ project.DELETE }}
+                            <p>{{ project.DELETE }}</p>
                         </li>
                     </ul>
                 {% endfor %}
             </div>
 
         </div>
-                <!--{{ form.as_table }}-->
-            <!--<input type="submit" value="Save profile" class="button button-primary icon-on-left">-->
     </form>
 </div>
 
@@ -133,6 +143,7 @@
         });
     </script>
 {% endblock %}
+
 <script type='text/javascript'>
 function updateElementIndex(el, prefix, ndx) {
     var id_regex = new RegExp('(' + prefix + '-\\d+)');

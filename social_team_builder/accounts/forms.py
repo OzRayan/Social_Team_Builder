@@ -1,7 +1,6 @@
 import re
 from PIL import Image
 from django import forms
-from django.core.files import File
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -45,33 +44,45 @@ class UserProfileForm(forms.ModelForm):
 
 
 class AvatarForm(forms.ModelForm):
-    """Avatar form
-    :inherit: - forms.ModelForm"""
-
-    x = forms.FloatField(widget=forms.HiddenInput())
-    y = forms.FloatField(widget=forms.HiddenInput())
-    height = forms.FloatField(widget=forms.HiddenInput())
-    width = forms.FloatField(widget=forms.HiddenInput())
-
     class Meta:
         model = get_user_model()
-        fields = ('avatar', 'x', 'y', 'height', 'width')
+        fields = ('avatar',)
 
-    def save(self):
-        avatar = super(AvatarForm, self).save()
 
-        x = self.cleaned_data.get('x')
-        y = self.cleaned_data.get('y')
-        w = self.cleaned_data.get('width')
-        h = self.cleaned_data.get('height')
+class AvatarCropForm(forms.Form):
+    """Avatar form
+    :inherit: - forms.Form"""
 
-        image = Image.open(avatar.file)
-        # rotated_omage = image.rotate()
-        cropped_image = image.crop((x, y, w + x, h + y))
-        # resized_image = cropped_image.resize((200, 200), Image.ANTIALIAS)
-        cropped_image.save(avatar.file.path)
+    left = forms.IntegerField()
+    top = forms.IntegerField()
+    right = forms.IntegerField()
+    bottom = forms.IntegerField()
 
-        return avatar
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    # class Meta:
+    #     model = get_user_model()
+    #     fields = ('left', 'top', 'right', 'bottom')
+
+    def clean(self):
+        with Image.open(self.user.avatar.path) as avatar:
+            width, height = avatar.size
+
+            left = int(self.cleaned_data['left'])
+            top = int(self.cleaned_data['top'])
+            right = int(self.cleaned_data['right'])
+            bottom = int(self.cleaned_data['bottom'])
+
+            max_left = width - right
+            max_top = height - bottom
+
+            if left >= max_left or top >= max_top \
+                    or left >= width or top >= height or right > (width+1) or bottom > (height+1) \
+                    or left < 0 or top < 0 or right <= 0 or bottom <= 0:
+                # messages.error(self.request, "Unable to crop!")
+                raise forms.ValidationError("Unable to crop!")
 
 
 class BaseForm(forms.ModelForm):
@@ -100,6 +111,7 @@ class SkillForm(BaseForm):
 class ProjectForm(BaseForm):
     """Project form - own project list with url field
     :inherit: - BaseForm class"""
+    url = forms.URLField()
 
     class Meta:
         model = models.MyProject

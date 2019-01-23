@@ -1,26 +1,22 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin as LrM
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
-
-from django.http import HttpResponseRedirect, HttpResponse, Http404
-
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import get_object_or_404
 from django.views.generic import (CreateView, DetailView, DeleteView,
                                   ListView, TemplateView, UpdateView)
 from notify.signals import notify
-from braces.views import SelectRelatedMixin, PrefetchRelatedMixin
+from braces.views import PrefetchRelatedMixin as PrM
 
 from . import forms
 from . import models
-from .mixin import PageTitleMixin
+from .mixin import PageTitleMixin as PtM
 # noinspection PyUnresolvedReferences
 from accounts.models import UserApplication
 
 
-class ProjectListView(PrefetchRelatedMixin, ListView):
+class ProjectListView(PrM, ListView):
     """Projects list view
     :url:
     ^$
@@ -35,18 +31,11 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
     context_object_name = "projects"
     prefetch_related = ['positions', ]
 
-    # @property
-    # def available(self):
-    #     return self.positions.exclude(apply__status=True)
-
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
         positions = models.Position.objects.exclude(apply__status=True)
         context['positions_list'] = positions.values('name').distinct()
-        # context['positions'] = positions.filter(
-        #     project__in=context['projects']
-        # ).exclude(apply__status=True)
         # import pdb; pdb.set_trace()
         context['selected'] = self.request.GET.get('filter')
         return context
@@ -56,18 +45,20 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
         # noinspection PyUnresolvedReferences
         queryset = super().get_queryset()
         user = self.request.user
+        # import pdb; pdb.set_trace()
+
         if str(user) != 'AnonymousUser':
             user_skills = user.profile_skills.all().values('name')
-        # print(self.request.user.profile_skills.all().values('name'))
+            user_skills = [skill['name'] for skill in user_skills.values()]
         for_you = self.request.GET.get('for_you')
         term = self.request.GET.get('q')
         selected_filter = self.request.GET.get('filter')
-
         if for_you:
-            for skill in user_skills:
-                queryset = queryset.filter(
-                    Q(positions__skill__name__icontains=skill['name']))
-                # import pdb; pdb.set_trace()
+            queryset = queryset.filter(Q(
+                positions__skill__name__in=user_skills)).exclude(
+                user=self.request.user).distinct()
+        # import pdb; pdb.set_trace()
+
         if term:
             queryset = queryset.filter(Q(title__icontains=term) |
                                        Q(description__icontains=term))
@@ -76,7 +67,7 @@ class ProjectListView(PrefetchRelatedMixin, ListView):
         return queryset
 
 
-class ProjectCreateView(LrM, PageTitleMixin, CreateView):
+class ProjectCreateView(LrM, PtM, CreateView):
     """Project list view
     :url:
     project/new/$
@@ -130,8 +121,7 @@ class ProjectCreateView(LrM, PageTitleMixin, CreateView):
         return HttpResponseRedirect(reverse('projects:create'))
 
 
-class ProjectEditView(LrM, PageTitleMixin,
-                      UpdateView):
+class ProjectEditView(LrM, PtM, UpdateView):
     """Project Edit view
     :url:
     project/(?P<pk>\d+)/edit/$
@@ -150,7 +140,7 @@ class ProjectEditView(LrM, PageTitleMixin,
     context_object_name = "project"
 
     def get_page_title(self):
-        return f"Update {self.object}"
+        return "Update {}".format(self.object)
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get('pk')
@@ -179,14 +169,10 @@ class ProjectEditView(LrM, PageTitleMixin,
                 project=project))
 
         if form.is_valid() and position_formset.is_valid():
-            project = form.save(commit=False)
-            # project.user = request.user
-            project.save()
-
+            project = form.save()
             positions = position_formset.save(commit=False)
             for to_delete in position_formset.deleted_objects:
                 to_delete.delete()
-
             for position in positions:
                 position.project = project
                 position.save()
@@ -202,7 +188,7 @@ class ProjectEditView(LrM, PageTitleMixin,
         return HttpResponseRedirect(reverse('accounts:profile_edit'))
 
 
-class ProjectDetailView(PrefetchRelatedMixin, DetailView):
+class ProjectDetailView(PrM, DetailView):
     """Project Detail view
     :url:
     project/(?P<pk>\d+)/$
@@ -217,19 +203,19 @@ class ProjectDetailView(PrefetchRelatedMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         user = self.request.user
-        print(dir(user))
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
-        context['positions'] = models.Position.objects.filter(
+        positions = models.Position.objects.all()
+        context['positions'] = positions.filter(
             project=context['project']).exclude(apply__status=True)
-        if user.is_authenticated():
+        if str(user) != "AnonymousUser":
             # noinspection PyUnresolvedReferences
-            context['applied'] = models.Position.objects.filter(
+            context['applied'] = positions.filter(
                 project=context['project'],
                 apply__applicant=user)
         else:
             # noinspection PyUnresolvedReferences
-            context['applied'] = models.Position.objects.filter(
+            context['applied'] = positions.filter(
                 project=context['project']
             )
         # print(dir(context['applied'].values))
@@ -252,14 +238,13 @@ class ProjectDeleteView(LrM, DeleteView):
     success_url = reverse_lazy("projects:project_list")
 
     def get_object(self, queryset=None):
-
         project = super().get_object()
         if project.user != self.request.user:
             raise Http404('You are not allowed to delete!')
         return project
 
 
-class ApplyView(LrM, PageTitleMixin, TemplateView):
+class ApplyView(LrM, PtM, TemplateView):
     def get(self, request, *args, **kwargs):
         user = request.user
         project_pk = kwargs.get('pr_pk')
@@ -276,5 +261,3 @@ class ApplyView(LrM, PageTitleMixin, TemplateView):
         obj.save()
         return HttpResponseRedirect(reverse_lazy('projects:detail',
                                                  kwargs={'pk': project.id}))
-
-

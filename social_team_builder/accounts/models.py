@@ -73,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def full_name(self):
-        return f'{self.first_name} {self.last_name}'
+        return '{} {}'.format(self.first_name, self.last_name)
 
     def get_absolute_url(self):
         return reverse("accounts:profile",

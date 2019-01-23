@@ -17,9 +17,9 @@
 
 
                 {% if app_list %}
-                    <li><a href="{% url 'accounts:application' %}" {% if not app_selected %} class="selected"{% endif %}>All Applications</a></li>
+                    <li><a href="{% url 'accounts:application' %}" {% if not app_selected %} class="selected"{% else %} class="my-button"{% endif %}>All Applications</a></li>
                     {% for application in app_list %}
-                        <li><a href="?app_filter={{ application }}"{% if app_selected == application %} class="selected"{% endif %}>{{ application }}</a></li>
+                        <li><a href="?app_filter={{ application }}"{% if app_selected == application %} class="selected"{% else %} class="my-button"{% endif %}>{{ application }}</a></li>
                     {% endfor %}
                 {% else %}
                     <li>N/A</li>
@@ -38,9 +38,9 @@
                 <ul class="circle--filter--list">
 
                     {% if projects %}
-                        <li><a href="{% url 'accounts:application' %}" {% if not pro_selected %} class="selected"{% endif %}>All projects</a></li>
+                        <li><a href="{% url 'accounts:application' %}" {% if not pro_selected %} class="selected"{% else %} class="my-button"{% endif %}>All projects</a></li>
                         {% for project in projects %}
-                            <li><a href="?pro_filter={{ project.title }}"{% if pro_selected == project.title %} class="selected"{% endif %}>{{ project.title }}</a></li>
+                            <li><a href="?pro_filter={{ project.title }}"{% if pro_selected == project.title %} class="selected"{% else %} class="my-button"{% endif %}>{{ project.title }}</a></li>
                         {% endfor %}
                     {% else %}
                         <li>N/A</li>
@@ -59,9 +59,9 @@
                 <ul class="circle--filter--list">
 
                     {% if skills_list %}
-                        <li><a href="{% url 'accounts:application' %}" {% if not skill_selected %} class="selected"{% endif %}>All Needs</a></li>
+                        <li><a href="{% url 'accounts:application' %}" {% if not skill_selected %} class="selected"{% else %} class="my-button"{% endif %}>All Needs</a></li>
                         {% for skill in skills_list %}
-                            <li><a href="?skill_filter={{ skill.name }}"{% if skill_selected == skill.name %} class="selected"{% endif %}>{{ skill.name }}</a></li>
+                            <li><a href="?skill_filter={{ skill.name }}"{% if skill_selected == skill.name %} class="selected"{% else %} class="my-button"{% endif %}>{{ skill.name }}</a></li>
                         {% endfor %}
                     {% else %}
                         <li>N/A</li>
@@ -81,45 +81,71 @@
         <table class="u-full-width circle--table">
             <thead>
                 <tr>
-                <th>Applicant</th>
-                <th class="circle--cell--right">Applicant Position</th>
+                <th><h3>Applicant</h3></th>
+                <th class="circle--cell--right"><h3>Applicant Position</h3></th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for application in applications %}
+                <div class="d-flex fustify-content-between">
                     <tr class="clickable-row" data-href="{% url 'accounts:profile' application.applicant.pk %}">
-                    <td>
-                        <h3>{{ application.applicant.full_name }}</h3>
-                        <p>{{ application.project }}</p>
-                    </td>
-                    <td class="circle--cell--right">
-                        <span class="secondary-label">{{ application.position }}</span>
-                    </td>
-                    {% if application.applicant.id == request.user.id %}
-                        <td>
-                            <h5>
-                                This can be accepted or rejected only by
-                                <strong><i>{{ application.project.user.full_name }}</i></strong>
-                            </h5>
-                        </td>
-                    {% else %}
-                        {% if application.status == None %}
                             <td>
-                                <a class="button button-primary"
-                                   href="{% url 'accounts:decision_update' application.applicant.pk application.position.pk 'accept' %}">Accept</a>
+                                <h3 class="title">{{ application.applicant.full_name }}</h3>
+                                <p class="">{{ application.project }}</p>
                             </td>
-                            <td>
-                                <a class="button button-primary"
-                                   href="{% url 'accounts:decision_update' application.applicant.pk application.position.pk 'reject' %}">Reject</a>
+                            <td class="circle--cell--right">
+                                <span class="secondary-label h4 pos">{{ application.position }}</span>
                             </td>
-                        {% elif application.status %}
-                            <td><h5>Accepted</h5></td>
-                        {% elif not application.status %}
-                            <td><h5>Rejected</h5></td>
+                        {% if application.applicant.id == request.user.id %}
+                            {% if application.status == None %}
+                                <td>
+                                    <h5>
+                                        This is
+                                        <strong><i><a  class="user-info" href="{% url 'accounts:profile' application.project.user.id %}">
+                                            {{ application.project.user.full_name }}</a>
+                                        </i></strong> decision
+                                    </h5>
+                                </td>
+                            {% elif application.status %}
+                                <td>
+                                    <h5>
+                                        <h5 class="h4 accepted">Accepted</h5> by
+                                        <strong><i><a  class="user-info" href="{% url 'accounts:profile' application.project.user.id %}">
+                                            {{ application.project.user.full_name }}</a>
+                                        </i></strong>
+                                    </h5>
+                                </td>
+                            {% elif not application.status %}
+                                <td>
+                                    <h5>
+                                        <h5 class="h4 rejected">Rejected</h5> by
+                                        <strong><i><a  class="user-info" href="{% url 'accounts:profile' application.project.user.id %}">
+                                            {{ application.project.user.full_name }}</a>
+                                        </i></strong>
+                                    </h5>
+                                </td>
+                            {% endif %}
+                        {% elif application.applicant.id != requeest.user.id %}
+                            <div class="d-flex justify-content-end">
+                                {% if application.status == None %}
+                                    <td>
+                                        <a class="button nav_button button-accept"
+                                           href="{% url 'accounts:decision_update' application.applicant.pk application.position.pk 'accept' %}">Accept</a>
+                                    </td>
+                                    <td>
+                                        <a class="button nav_button button-accept"
+                                           href="{% url 'accounts:decision_update' application.applicant.pk application.position.pk 'reject' %}">Reject</a>
+                                    </td>
+                                {% elif application.status %}
+                                    <td><h5 class="h4 accepted">Accepted</h5></td>
+                                {% elif not application.status %}
+                                    <td><h5 class="h4 rejected">Rejected</h5></td>
+                                {% endif %}
+                            </div>
                         {% endif %}
-                    {% endif %}
                     </tr>
+                </div>
                 {% endfor %}
 
             </tbody>

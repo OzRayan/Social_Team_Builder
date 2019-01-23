@@ -21,7 +21,7 @@ class Project(models.Model):
     #     return self.positions.exclude(apply__status=True)
 
     def __str__(self):
-        return f'{self.title}'
+        return '{}'.format(self.title)
 
 
 class Position(models.Model):
@@ -41,5 +41,5 @@ class Position(models.Model):
                                    related_name='skills')
 
     def __str__(self):
-        return f'{self.name}'
+        return '{}'.format(self.name)
 
