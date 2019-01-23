@@ -274,12 +274,6 @@ class ApplicationView(LrM, PrM, ListView):
     context_object_name = 'applications'
     prefetch_related = ['applicant__projects', ]
 
-    CHOICE = {
-        'New application': None,
-        'Accepted': True,
-        'Rejected': False
-    }
-
     @staticmethod
     def choice(arg):
         if arg == "New application":
@@ -295,7 +289,6 @@ class ApplicationView(LrM, PrM, ListView):
 
         context['applications'] = context['applications'].filter(
             project__user=self.request.user)
-        status = context['applications'].values('status').distinct()
         # import pdb; pdb.set_trace()
 
         context['app_list'] = ['New application', 'Accepted', 'Rejected']
