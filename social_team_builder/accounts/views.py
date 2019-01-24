@@ -1,6 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import (get_user_model, login, logout,
-                                 update_session_auth_hash)
+from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin as LrM
@@ -9,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.views.generic import (CreateView, FormView, RedirectView,
@@ -57,7 +56,7 @@ class ValidateView(RedirectView):
             user.save()
             login(request, user)
             messages.success(request, "Your account is now active. "
-                                   "Complete your registration!")
+                                      "Complete your registration!")
         else:
             messages.warning(request, "Activation link is invalid.")
         return super().get(request, *args, **kwargs)
@@ -93,7 +92,7 @@ class SignOutView(LrM, RedirectView):
     :url:
     ^accounts/signout/$
 
-    :inherit: - (LrM) mixins.LoginRequiredMixin
+    :inherit: - LrM (LoginRequiredMixin)
               - generic.RedirectView
     :methods: - get()"""
     url = reverse_lazy("projects:project_list")
@@ -135,34 +134,25 @@ class SignUpView(CreateView):
             return HttpResponseRedirect(self.success_url)
 
 
-class UserProfileView(PtM, PrM, TemplateView):
+class UserProfileView(PrM, TemplateView):
     """User profile view
     :url:
     ^accounts/profile/(?P<pk>\d+)/$
 
-    :inherit: - PageTitleMixin (custom mixin)
+    :inherit: - PrM (PrefetchRelatedMixin)
               - generic.TemplateView
-    :methods: - get_page_title()
+    :methods: - get()
               - get_context_data()
     """
     template_name = "accounts/profile.html"
-    # model = get_user_model()
     context_object_name = "profile"
     prefetch_related = ['profile_skills', 'my_projects', 'projects', 'positions']
-    #
-    # def get_object(self, queryset=None):
-    #     return self.request.user
 
     def get(self, request, **kwargs):
         pk = kwargs.get('pk')
-        profile = models.User.objects.get(pk=pk)
+        profile = get_object_or_404(models.User, pk=pk)
         kwargs['profile'] = profile
         return super().get(request, **kwargs)
-    #
-    #
-    # def get_page_title(self):
-    #     # obj = self.get_object()
-    #     return f"{self.get_object()}'s Profile"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -178,8 +168,8 @@ class UserProfileEditView(LrM, PtM, UpdateView):
     :url:
     ^accounts/profile/edit/$
 
-    :inherit: - (LrM) LoginRequiredMixin
-              - PageTitleMixin (custom mixin)
+    :inherit: - LrM (mixins.LoginRequiredMixin)
+              - PtM (PageTitleMixin)
               - generic.UpdateView
     :methods: - get_page_title()
               - get_object()
@@ -269,6 +259,17 @@ class UserProfileEditView(LrM, PtM, UpdateView):
 
 
 class ApplicationView(LrM, PrM, ListView):
+    """Application view
+    :url:
+    ^accounts/applications/$
+
+    :inherit: - LrM (mixins.LoginRequiredMixin)
+              - PrM (PrefetchRelatedMixin)
+              - generic.ListView
+    :methods: - choice() - staticmethod
+              - get_context_data()
+              - get_queryset()
+    """
     template_name = "accounts/applications.html"
     model = models.UserApplication
     context_object_name = 'applications'
@@ -286,7 +287,6 @@ class ApplicationView(LrM, PrM, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationView, self).get_context_data(**kwargs)
-
         context['applications'] = context['applications'].filter(
             project__user=self.request.user)
         # import pdb; pdb.set_trace()
@@ -308,8 +308,6 @@ class ApplicationView(LrM, PrM, ListView):
         app_term = self.request.GET.get('app_filter')
         pro_term = self.request.GET.get('pro_filter')
         skill_term = self.request.GET.get('skill_filter')
-        user = models.User.objects.all().exclude(pk=self.request.user.id)
-
         if app_term:
             queryset = queryset.filter(status=self.choice(app_term))
 
@@ -323,9 +321,18 @@ class ApplicationView(LrM, PrM, ListView):
 
 
 class DecisionView(LrM, TemplateView):
+    """Application view
+    :url:
+    ^accounts/applications/(?P<user_pk>\d+)/(?P<pos_pk>\d+)/(?P<decision>\w+)/$
 
+    :inherit: - LrM (LoginRequiredMixin)
+              - generic.TemplateView
+    :methods: - application_update() - staticmethod
+              - get()
+    """
     @staticmethod
     def application_update(user, position, arg):
+        # noinspection PyUnresolvedReferences
         models.UserApplication.objects.filter(
             applicant=user, position=position
         ).update(status=arg)
@@ -351,7 +358,16 @@ class DecisionView(LrM, TemplateView):
             return HttpResponseRedirect(reverse("accounts:application"))
 
 
-class NotificationsView(LrM, PrM, TemplateView):
+class NotificationsView(LrM, TemplateView):
+    """Notifications view
+    :url:
+    ^accounts/notifications/$
+
+    :inherit: - LrM (LoginRequiredMixin)
+              - generic.TemplateView
+    :methods: - get_context_data()
+              - get()
+    """
     template_name = 'accounts/notifications.html'
 
     def get_context_data(self, **kwargs):

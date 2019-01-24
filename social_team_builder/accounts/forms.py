@@ -1,9 +1,8 @@
-import re
-from PIL import Image
 from django import forms
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+
+from PIL import Image
 
 from . import models
 
@@ -25,8 +24,9 @@ class UserCreateForm(UserCreationForm):
 
 class UserProfileForm(forms.ModelForm):
     """User Profile form
-    :inherit: - forms.ModelForm class"""
-
+    :inherit: - forms.ModelForm class
+    :fields: - bio - forms.TextArea()
+    """
     bio = forms.Textarea(attrs={"cols": 28, "rows": 8})
 
     class Meta:
@@ -44,15 +44,22 @@ class UserProfileForm(forms.ModelForm):
 
 
 class AvatarForm(forms.ModelForm):
+    """Avatar Form
+    :inherit: - forms.ModelForm class"""
     class Meta:
         model = get_user_model()
         fields = ('avatar',)
 
 
 class AvatarCropForm(forms.Form):
-    """Avatar form
-    :inherit: - forms.Form"""
-
+    """Avatar Crop Form
+    :inherit: - forms.Form
+    :fields: - left
+             - top
+             - right
+             - bottom - all forms.IntegerField()
+    :method: - clean()
+    """
     left = forms.IntegerField()
     top = forms.IntegerField()
     right = forms.IntegerField()
@@ -61,10 +68,6 @@ class AvatarCropForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
-
-    # class Meta:
-    #     model = get_user_model()
-    #     fields = ('left', 'top', 'right', 'bottom')
 
     def clean(self):
         with Image.open(self.user.avatar.path) as avatar:
@@ -110,7 +113,9 @@ class SkillForm(BaseForm):
 
 class ProjectForm(BaseForm):
     """Project form - own project list with url field
-    :inherit: - BaseForm class"""
+    :inherit: - BaseForm class
+    :fields: - url - forms.URLField()
+    """
     url = forms.URLField()
 
     class Meta:
@@ -127,7 +132,7 @@ class ProjectForm(BaseForm):
 SkillFormset = forms.modelformset_factory(
     models.Skill,
     form=SkillForm,
-    extra=2,
+    extra=3,
     can_delete=True
 
 )
@@ -137,7 +142,7 @@ SkillInlineFormSet = forms.inlineformset_factory(
     models.Skill,
     form=SkillForm,
     fields=('name',),
-    extra=2,
+    extra=3,
     formset=SkillFormset,
     min_num=0,
     max_num=20,
@@ -162,68 +167,3 @@ ProjectInlineFormset = forms.inlineformset_factory(
     max_num=15,
     can_delete=True
 )
-
-
-class PasswordForm(forms.ModelForm):
-    """Password Form
-    :Inherit: - forms.Form
-    :fields: - old - password --> CharField widget PasswordInput
-             - new - password --> CharField widget PasswordInput
-             - check_new - password --> CharField widget PasswordInput
-    """
-    old = forms.CharField(widget=forms.PasswordInput())
-    new = forms.CharField(widget=forms.PasswordInput())
-    check_new = forms.CharField(widget=forms.PasswordInput())
-
-    class Meta:
-        model = get_user_model()
-        fields = ('old', 'new', 'check_new')
-
-    def __init__(self, request=None, *args, **kwargs):
-        """Prepares user data for password validation"""
-        self.request = request
-        super().__init__(*args, **kwargs)
-
-    def error(self, error_message):
-        """Validation error for failing checks"""
-        messages.error(self.request, error_message)
-        raise forms.ValidationError(error_message)
-
-    def clean(self):
-        """Password validation"""
-        cleaned_data = super().clean()
-        old_pass = cleaned_data.get('old', '')
-        new_pass = cleaned_data.get('new', '')
-        check_pass = cleaned_data.get('check_new', '')
-        profile = self.request.user
-
-        if not old_pass:
-            self.error('First give the old password!')
-        if not new_pass:
-            self.error('Before confirming the new password, add one first!')
-        if not check_pass:
-            self.error('Confirm the new password')
-
-        if len(new_pass) < 14:
-            self.error('Minim length 14 characters!')
-        if old_pass == new_pass:
-            self.error('New password can\'t match with the old password!')
-        if new_pass != check_pass:
-            self.error('Passwords doesn\'t match!')
-
-        # Checks if user profile name are present in password
-        if profile.first_name.lower() in new_pass.lower() or \
-                profile.last_name.lower() in new_pass.lower():
-            self.error('Password can\'t contain your first or last name!')
-
-        # Regex use to check alphabet, numeric, upper, lower and special chars in password.
-        if not re.findall('[A-Z]', new_pass):
-            self.error('Password must contain at least one upper letter!')
-        if not re.findall('[a-z]', new_pass):
-            self.error('Password must contain at least one lower letter!')
-        if not re.findall('\d', new_pass):
-            self.error('Password must contain at least one number!')
-        if not re.findall('\W[^_]', new_pass):
-            self.error('Password must contain at least one special character (ex: .\!@#$%^&*?_~-)')
-
-        return cleaned_data

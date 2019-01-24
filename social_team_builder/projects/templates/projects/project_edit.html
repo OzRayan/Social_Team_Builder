@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Edit Project | {{ block.super }}{% endblock %}
+{% block title %}Project Edit | {{ block.super }}{% endblock %}
 
 {% block media %}{{ form.media }}{% endblock %}
 
@@ -87,22 +87,8 @@
                 <h3>Applicant Requirements</h3>
                 <label for="id_requirements"></label>
                 <input id="id_requirements" name="requirements" value="{{ form.requirements.value }}" type="text" required>
-
             </div>
-
         </div>
-
-        <!--<div class="grid-25 grid-push-5">-->
-            <!--<div class="circle&#45;&#45;secondary&#45;&#45;module">-->
-                <!--<h3>Project Timeline</h3>-->
-                <!--<input id="id_time_estimate" name="time_estimate" value="{{ form.time_estimate.value }}" type="text" required>-->
-            <!--</div>-->
-
-            <!--<div class="circle&#45;&#45;secondary&#45;&#45;module">-->
-                <!--<h3>Applicant Requirements</h3>-->
-                <!--<input id="id_requirements" name="requirements" value="{{ form.requirements.value }}" type="text" required>-->
-            <!--</div>-->
-        <!--</div>-->
     </form>
 </div>
 {% endblock %}

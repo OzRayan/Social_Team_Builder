@@ -1,6 +1,6 @@
 certifi==2018.11.29
 coverage==4.0.3
-Django==1.9.9
+Django==1.11.18
 django-appconf==1.0.2
 django-bootstrap3==7.0.1
 django-braces==1.9.0

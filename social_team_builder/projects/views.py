@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import (CreateView, DetailView, DeleteView,
                                   ListView, TemplateView, UpdateView)
-from notify.signals import notify
+# from notify.signals import notify
 from braces.views import PrefetchRelatedMixin as PrM
 
 from . import forms
@@ -21,7 +21,7 @@ class ProjectListView(PrM, ListView):
     :url:
     ^$
 
-    :inherit: - PageTitleMixin (custom mixin)
+    :inherit: - PrefetchRelatedMixin
               - generic.ListView
     :methods: - get_context_data()
               - get_queryset()
@@ -36,7 +36,6 @@ class ProjectListView(PrM, ListView):
         # noinspection PyUnresolvedReferences
         positions = models.Position.objects.exclude(apply__status=True)
         context['positions_list'] = positions.values('name').distinct()
-        # import pdb; pdb.set_trace()
         context['selected'] = self.request.GET.get('filter')
         return context
 
@@ -57,8 +56,6 @@ class ProjectListView(PrM, ListView):
             queryset = queryset.filter(Q(
                 positions__skill__name__in=user_skills)).exclude(
                 user=self.request.user).distinct()
-        # import pdb; pdb.set_trace()
-
         if term:
             queryset = queryset.filter(Q(title__icontains=term) |
                                        Q(description__icontains=term))
@@ -67,13 +64,12 @@ class ProjectListView(PrM, ListView):
         return queryset
 
 
-class ProjectCreateView(LrM, PtM, CreateView):
+class ProjectCreateView(LrM, CreateView):
     """Project list view
     :url:
-    project/new/$
+    ^project/new/$
 
-    :inherit: - (LrM) loginRequiredMixin
-              - PageTitleMixin (custom mixin)
+    :inherit: - LrM (loginRequiredMixin)
               - generic.CreateView
     :methods: - get_context_data()
               - post()
@@ -81,7 +77,6 @@ class ProjectCreateView(LrM, PtM, CreateView):
     model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_new.html"
-    page_title = "Create project"
 
     def get_context_data(self, **kwargs):
         context = super(ProjectCreateView, self).get_context_data(**kwargs)
@@ -126,15 +121,14 @@ class ProjectEditView(LrM, PtM, UpdateView):
     :url:
     project/(?P<pk>\d+)/edit/$
 
-    :inherit: - (LrM) loginRequiredMixin
-              - PageTitleMixin (custom mixin)
+    :inherit: - LrM (mixins.loginRequiredMixin)
+              - PtM (PageTitleMixin)
               - generic.UpdateView
     :methods: - get_page_title()
               - get_object()
               - get_context_data()
               - post()
     """
-    # model = models.Project
     form_class = forms.ProjectForm
     template_name = "projects/project_edit.html"
     context_object_name = "project"
@@ -184,8 +178,7 @@ class ProjectEditView(LrM, PtM, UpdateView):
         else:
             messages.error(request, 'Something went wrong')
 
-        # return HttpResponseRedirect(reverse('projects:edit'))
-        return HttpResponseRedirect(reverse('accounts:profile_edit'))
+        return HttpResponseRedirect(reverse_lazy('accounts:edit'))
 
 
 class ProjectDetailView(PrM, DetailView):
@@ -193,7 +186,8 @@ class ProjectDetailView(PrM, DetailView):
     :url:
     project/(?P<pk>\d+)/$
 
-    :inherit: - generic.DetailView
+    :inherit: - PrM (PrefetchRelatedMixin)
+              - generic.DetailView
     :methods: - get_context_data()
     """
     model = models.Project
@@ -227,7 +221,7 @@ class ProjectDeleteView(LrM, DeleteView):
     :url:
     project/(?P<pk>\d+)/delete/$
 
-    :inherit: - (LrM) loginRequiredMixin
+    :inherit: - LrM (loginRequiredMixin)
               - generic.DeleteView
     :methods: - get_object()
     """
@@ -244,15 +238,23 @@ class ProjectDeleteView(LrM, DeleteView):
         return project
 
 
-class ApplyView(LrM, PtM, TemplateView):
+class ApplyView(LrM, TemplateView):
+    """Apply view
+    :url:
+    project/(?P<pr_pk>\d+)/apply/position/(?P<ps_pk>\d+)/$
+
+    :inherit: - LrM (loginRequiredMixin)
+              - generic.DeleteView
+    :methods: - get_object()
+    """
     def get(self, request, *args, **kwargs):
         user = request.user
         project_pk = kwargs.get('pr_pk')
         position_pk = kwargs.get('ps_pk')
         # noinspection PyUnresolvedReferences
-        project = models.Project.objects.get(pk=project_pk)
+        project = get_object_or_404(models.Project, pk=project_pk)
         # noinspection PyUnresolvedReferences
-        position = models.Position.objects.get(pk=position_pk)
+        position = get_object_or_404(models.Position, pk=position_pk)
         obj, _ = UserApplication.objects.get_or_create(
             applicant=user,
             project=project,

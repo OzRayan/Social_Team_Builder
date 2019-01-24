@@ -10,30 +10,25 @@
     <div class="bounds">
       <div class="grid-100">
           <div class="circle--fluid--cell circle--fluid--primary d-flex justify-content-between">
-              <h2>{{ page_title }}</h2>
+              <h2>Create project</h2>
               <div class="d-flex justify-content-end">
                   <input type="submit" form="my_form" value="Save project" class="button nav_button mr-3">
                   <a class="button nav_button button-discard" href="{% url 'projects:project_list' %}">Discard</a>
               </div>
           </div>
-
-
       </div>
     </div>
   </div>
-
 
 <!-- PROJECT FORM -->
 <div class="bounds circle--page circle--article">
     <form action="" method="POST" id="my_form" enctype="multipart/form-data">
         {% csrf_token %}
-
         <!-- Project Title - Description -->
         <div class="grid-70">
             <!--<input id="id_title" name="title" type="text" value="{{ form.title }}" required>-->
             <h3>Title:</h3>
             <input id="id_title" name="title" type="text" required>
-
             <div class="circle--article--body">
                 <h3>Description:</h3>
                 <p>{{ form.description }}<i>This input use <strong>MarkDown</strong></i></p>
@@ -53,7 +48,6 @@
                             <p>{{ position.name }}</p>
                             <label>{{ position.description.label_tag }}</label>
                             <p>{{ position.description }}<i>This input use <strong>MarkDown</strong></i></p>
-
 
                             <label >{{ position.time.label_tag }}</label>
                             <p>{{ position.time }}</p>
@@ -78,16 +72,12 @@
                 <h3>Project Timeline</h3>
                 <label for="id_time_estimate"></label>
                 <input id="id_time_estimate" name="time_estimate" type="text" required>
-
             </div>
-
             <div class="circle--secondary--module">
                 <h3>Applicant Requirements</h3>
                 <label for="id_requirements"></label>
                 <input id="id_requirements" name="requirements" type="text" required>
-
             </div>
-
         </div>
     </form>
   </div>

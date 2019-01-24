@@ -6,7 +6,8 @@ from accounts.models import Skill
 
 class ProjectForm(forms.ModelForm):
     """Project form
-    :inherit: - forms.ModelForm class
+    :inherit: - forms.ModelForm
+    :field: - description - forms.TextArea
     """
     description = forms.Textarea(attrs={"cols": 28, "rows": 6})
 
@@ -22,6 +23,9 @@ class ProjectForm(forms.ModelForm):
 class PositionForm(forms.ModelForm):
     """Position form
     :inherit: - forms.ModelForm
+    :fields: - description - forms.TextArea
+             -skill - forms.ModelMultipleChoiceField with
+                      forms.CheckboxSelectMultiple() widget
     """
     description = forms.Textarea(attrs={'cols': 28, 'rows': 6})
     skill = forms.ModelMultipleChoiceField(
@@ -46,6 +50,7 @@ PositionFormset = forms.modelformset_factory(
     extra=3,
 )
 
+# PositionInlineFormset
 PositionInlineFormset = forms.inlineformset_factory(
     models.Project,
     models.Position,
