@@ -13,7 +13,7 @@ class UserCreateForm(UserCreationForm):
     """
     class Meta:
         model = get_user_model()
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ['username', 'email', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,10 +48,10 @@ class AvatarForm(forms.ModelForm):
     :inherit: - forms.ModelForm class"""
     class Meta:
         model = get_user_model()
-        fields = ('avatar',)
+        fields = ['avatar', ]
 
 
-class AvatarCropForm(forms.Form):
+class AvatarCropForm(forms.ModelForm):
     """Avatar Crop Form
     :inherit: - forms.Form
     :fields: - left
@@ -65,12 +65,16 @@ class AvatarCropForm(forms.Form):
     right = forms.IntegerField()
     bottom = forms.IntegerField()
 
-    def __init__(self, user, *args, **kwargs):
-        self.user = user
-        super().__init__(*args, **kwargs)
+    # def __init__(self, user, *args, **kwargs):
+    #     self.user = user
+    #     super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = get_user_model()
+        fields = ['left', 'top', 'right', 'bottom']
 
     def clean(self):
-        with Image.open(self.user.avatar.path) as avatar:
+        with Image.open(self.request.user.avatar.path) as avatar:
             width, height = avatar.size
 
             left = int(self.cleaned_data['left'])

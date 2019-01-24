@@ -22,33 +22,35 @@
             </div>
 
                 <div class="grid-100 d-flex justify-content-between">
-                    {% if size %}
-                        <h3>Size: {{ size }}</h3>
-                        <form method="post" enctype="multipart/form-data">
+                    {% if user.avatar %}
+                        {% if size %}
+                            <h3>Size: {{ size }}</h3>
+                        {% endif %}
+                            <form method="post" enctype="multipart/form-data">
 
-                        {% csrf_token %}
+                            {% csrf_token %}
 
-                        <div class="d-flex justify-content-between mt-5">
-                            <div class="grid-20">
-                                <h4>Left (0 - max):</h4>
-                                <input name="left" type="text" required>
+                            <div class="d-flex justify-content-between mt-5">
+                                <div class="grid-20">
+                                    <h4>Left (0 - max):</h4>
+                                    <input name="left" type="text" required>
+                                </div>
+                                <div class="grid-20">
+                                    <h4>Top (0 - max):</h4>
+                                    <input name="top" type="text" required>
+                                </div>
+                                <div class="grid-20">
+                                    <h4>Right (0 - max):</h4>
+                                    <input name="right" type="text" required>
+                                </div>
+                                <div class="grid-20">
+                                    <h4>Bottom (0 - max):</h4>
+                                    <input name="bottom" type="text" required>
+                                </div>
                             </div>
-                            <div class="grid-20">
-                                <h4>Top (0 - max):</h4>
-                                <input name="top" type="text" required>
-                            </div>
-                            <div class="grid-20">
-                                <h4>Right (0 - max):</h4>
-                                <input name="right" type="text" required>
-                            </div>
-                            <div class="grid-20">
-                                <h4>Bottom (0 - max):</h4>
-                                <input name="bottom" type="text" required>
-                            </div>
-                        </div>
-                            <button type="submit" class="button nav_button">Apply!</button>
-                            <a class="button nav_button" href="{% url 'accounts:profile' user.id %}">Back</a>
-                        </form>
+                                <button type="submit" class="button nav_button">Apply!</button>
+                                <a class="button nav_button" href="{% url 'accounts:profile' user.id %}">Back</a>
+                            </form>
                     {% else %}
                         <form method="post" enctype="multipart/form-data">
 

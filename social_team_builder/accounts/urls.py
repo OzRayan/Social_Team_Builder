@@ -12,7 +12,7 @@ urlpatterns = [
         name='profile_edit'),
     url(r'profile/avatar/$', views.AvatarView.as_view(),
         name='avatar_edit'),
-    url(r'profile/avatar/crop', views.crop_image, name='crop_avatar'),
+    url(r'profile/avatar/crop', views.CropView.as_view(), name='crop_avatar'),
     url(r'profile/avatar/edit/(?P<action>\w+)$', views.AvatarEditView.as_view(),
         name='edit_avatar'),
     # url(r'profile/avatar/rotate_right/$', views.RotateRightView.as_view(),
