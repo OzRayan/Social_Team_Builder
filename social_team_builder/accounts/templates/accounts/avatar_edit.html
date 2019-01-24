@@ -13,10 +13,10 @@
                      class="card-image-top mb-4"
                      style="width: 100%; height: 80%">
                 <div class="card-body d-flex justify-content-between ml-2">
-                    <a href="{% url 'accounts:rotate_avatar_right' %}" class="button nav_button">Rotate Right</a>
-                    <a href="{% url 'accounts:rotate_avatar_left' %}" class="button nav_button">Rotate Left</a>
-                    <a href="{% url 'accounts:flip_avatar_up' %}" class="button nav_button">Flip Up</a>
-                    <a href="{% url 'accounts:flip_avatar_side' %}" class="button nav_button">Flip Side</a>
+                    <a href="{% url 'accounts:edit_avatar' 'right' %}" class="button nav_button">Rotate Right</a>
+                    <a href="{% url 'accounts:edit_avatar' 'left' %}" class="button nav_button">Rotate Left</a>
+                    <a href="{% url 'accounts:edit_avatar' 'up' %}" class="button nav_button">Flip Up</a>
+                    <a href="{% url 'accounts:edit_avatar' 'side' %}" class="button nav_button">Flip Side</a>
                     <a href="{% url 'accounts:crop_avatar' %}" class="button nav_button">Crop</a>
                 </div>
             </div>

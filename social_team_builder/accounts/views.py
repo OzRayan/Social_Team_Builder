@@ -382,8 +382,6 @@ class NotificationsView(LrM, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-# Still need fixing!!
-#######################
 class AvatarView(LrM, UpdateView):
     form_class = forms.AvatarForm
     template_name = "accounts/avatar_edit.html"
@@ -428,46 +426,6 @@ class AvatarEditView(LrM, TemplateView):
         if action == 'side':
             self.edit(request.user.avatar.path, Image.FLIP_LEFT_RIGHT)
         return HttpResponseRedirect(reverse('accounts:avatar_edit'))
-
-
-class RotateRightView(LrM, TemplateView):
-    template_name = "accounts/avatar_edit.html"
-
-    def get(self, request, *args, **kwargs):
-        with Image.open(request.user.avatar.path) as image:
-            image = image.transpose(Image.ROTATE_270)
-            image.save(request.user.avatar.path)
-        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
-
-
-class RotateLeftView(LrM, TemplateView):
-    template_name = "accounts/avatar_edit.html"
-
-    def get(self, request, *args, **kwargs):
-        with Image.open(request.user.avatar.path) as image:
-            image = image.transpose(Image.ROTATE_90)
-            image.save(request.user.avatar.path)
-        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
-
-
-class FlipSideView(LrM, TemplateView):
-    template_name = "accounts/avatar_edit.html"
-
-    def get(self, request, *args, **kwargs):
-        with Image.open(request.user.avatar.path) as image:
-            image = image.transpose(Image.FLIP_LEFT_RIGHT)
-            image.save(request.user.avatar.path)
-        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
-
-
-class FlipUpView(LrM, TemplateView):
-    template_name = "accounts/avatar_edit.html"
-
-    def get(self, request, *args, **kwargs):
-        with Image.open(request.user.avatar.path) as image:
-            image = image.transpose(Image.FLIP_TOP_BOTTOM)
-            image.save(request.user.avatar.path)
-        return HttpResponseRedirect(reverse_lazy('accounts:avatar_edit'))
 
 
 @login_required
