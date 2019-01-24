@@ -1,3 +1,6 @@
+# NOTE: # noinspection - prefixed comments are for pycharm editor only
+# for ignoring PEP 8 style highlights
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
@@ -389,10 +392,10 @@ class AvatarView(LrM, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['form'] = self.get_form()
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        return context
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
@@ -401,32 +404,30 @@ class AvatarView(LrM, UpdateView):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('accounts:avatar_edit'))
-        # else:
-        #     form = forms.AvatarForm()
         return HttpResponseRedirect(reverse('accounts:avatar_edit',
                                             {'form': form}))
 
 
-# class AvatarEditView(LrM, TemplateView):
-#     template_name = "accounts/avatar_edit.html"
-#
-#     @staticmethod
-#     def edit(path, arg):
-#         with Image.open(path) as image:
-#             image = image.transpose(arg)
-#             image.save(path)
-#
-#     def get(self, request, *args, **kwargs):
-#         action = self.kwargs.get('action')
-#         if action == 'left':
-#             self.edit(request.user.avatar.path, Image.ROTATE_90)
-#         if action == 'right':
-#             self.edit(request.user.avatar.path, Image.ROTATE_270)
-#         if action == 'up':
-#             self.edit(request.user.avatar.path, Image.FLIP_TOP_BOTTOM)
-#         if action == 'side':
-#             self.edit(request.user.avatar.path, Image.FLIP_LEFT_RIGHT)
-#         return HttpResponseRedirect(reverse('accounts:avatar_edit'))
+class AvatarEditView(LrM, TemplateView):
+    template_name = "accounts/avatar_edit.html"
+
+    @staticmethod
+    def edit(path, arg):
+        with Image.open(path) as image:
+            image = image.transpose(arg)
+            image.save(path)
+
+    def get(self, request, *args, **kwargs):
+        action = self.kwargs.get('action')
+        if action == 'left':
+            self.edit(request.user.avatar.path, Image.ROTATE_90)
+        if action == 'right':
+            self.edit(request.user.avatar.path, Image.ROTATE_270)
+        if action == 'up':
+            self.edit(request.user.avatar.path, Image.FLIP_TOP_BOTTOM)
+        if action == 'side':
+            self.edit(request.user.avatar.path, Image.FLIP_LEFT_RIGHT)
+        return HttpResponseRedirect(reverse('accounts:avatar_edit'))
 
 
 class RotateRightView(LrM, TemplateView):

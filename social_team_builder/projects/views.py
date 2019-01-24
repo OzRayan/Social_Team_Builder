@@ -1,3 +1,6 @@
+# NOTE: # noinspection - prefixed comments are for pycharm editor only
+# for ignoring PEP 8 style highlights
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin as LrM
 from django.core.urlresolvers import reverse, reverse_lazy
