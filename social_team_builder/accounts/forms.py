@@ -51,7 +51,7 @@ class AvatarForm(forms.ModelForm):
         fields = ['avatar', ]
 
 
-class AvatarCropForm(forms.ModelForm):
+class AvatarCropForm(forms.Form):
     """Avatar Crop Form
     :inherit: - forms.Form
     :fields: - left
@@ -65,22 +65,19 @@ class AvatarCropForm(forms.ModelForm):
     right = forms.IntegerField()
     bottom = forms.IntegerField()
 
-    # def __init__(self, user, *args, **kwargs):
-    #     self.user = user
-    #     super().__init__(*args, **kwargs)
-
-    class Meta:
-        model = get_user_model()
-        fields = ['left', 'top', 'right', 'bottom']
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super().__init__(*args, **kwargs)
 
     def clean(self):
+        cleaned_data = super().clean()
         with Image.open(self.request.user.avatar.path) as avatar:
             width, height = avatar.size
 
-            left = int(self.cleaned_data['left'])
-            top = int(self.cleaned_data['top'])
-            right = int(self.cleaned_data['right'])
-            bottom = int(self.cleaned_data['bottom'])
+            left = int(cleaned_data.get('left'))
+            top = int(cleaned_data.get('top'))
+            right = int(cleaned_data.get('right'))
+            bottom = int(cleaned_data.get('bottom'))
 
             max_left = width - right
             max_top = height - bottom
@@ -90,6 +87,7 @@ class AvatarCropForm(forms.ModelForm):
                     or left < 0 or top < 0 or right <= 0 or bottom <= 0:
                 # messages.error(self.request, "Unable to crop!")
                 raise forms.ValidationError("Unable to crop!")
+        return cleaned_data
 
 
 class BaseForm(forms.ModelForm):

@@ -12,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import (CreateView, FormView, RedirectView,
                                   TemplateView, UpdateView, ListView)
@@ -431,59 +431,69 @@ class AvatarEditView(LrM, TemplateView):
 class CropView(LrM, FormView):
     success_url = reverse_lazy("accounts:avatar_edit")
     template_name = "accounts/avatar_edit.html"
-    model = get_user_model()
+    # model = get_user_model()
     form_class = forms.AvatarCropForm
 
-    def get_object(self, queryset=None):
-        return self.request.user
+    # def get_object(self, queryset=None):
+    #     return self.request.user
 
     # def get_form(self, form_class=None):
     #     if form_class is None:
     #         form_class = self.get_form_class()
     #     return form_class(self.request, **self.get_form_kwargs())
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = self.get_form()
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     # context['form'] = self.get_form()
+    #     with Image.open(self.request.user.avatar.path) as image:
+    #         width, height = image.size
+    #         size = str(width), str(height)
+    #
+    #     context['size'] = size
+    #     return context
 
     # def form_valid(self, form):
     #     return HttpResponseRedirect(self.get_success_url())
 
     def post(self, request, *args, **kwargs):
-        user = self.get_object()
+        # form = forms.AvatarCropForm(request=request)
         with Image.open(request.user.avatar.path) as image:
             width, height = image.size
             size = str(width), str(height)
-            form = forms.AvatarCropForm(request.POST, request.FILES, instance=user)
+            print('##### SIZE ####')
+            print(size)
+            print('###############')
+            form = forms.AvatarCropForm(data=request.POST, request=request)
+
             if form.is_valid():
-                box = (int(form.cleaned_data['left']),
+                new = (int(form.cleaned_data['left']),
                         int(form.cleaned_data['top']),
                         int(form.cleaned_data['right']),
                         int(form.cleaned_data['bottom']))
-                image = image.crop(box)
+                image = image.crop(new)
                 image.save(request.user.avatar.path)
+                # import pdb; pdb.set_trace()
                 return HttpResponseRedirect(reverse("accounts:avatar_edit"))
-        return HttpResponseRedirect(reverse('accounts/avatar_edit.html',
+            return HttpResponseRedirect(reverse_lazy('accounts/avatar_edit.html',
                                     {'form': form, 'size': size}))
 
 
 # @login_required
-# def crop_image(request):
-#     form = forms.AvatarCropForm(user=request.user)
-#     with Image.open(request.user.avatar.path) as image:
-#         width, height = image.size
-#         size = str(width), str(height)
-#         if request.method == 'POST':
-#             form = forms.AvatarCropForm(user=request.user, data=request.POST)
-#             if form.is_valid():
-#                 box = (int(form.cleaned_data['left']),
-#                        int(form.cleaned_data['top']),
-#                        int(form.cleaned_data['right']),
-#                        int(form.cleaned_data['bottom']),
-#                        )
-#                 image = image.crop(box)
-#                 image.save(request.user.avatar.path)
-#                 return redirect('accounts:avatar_edit')
-#         return render(request, 'accounts/avatar_edit.html',
-#                       {'form': form, 'size': size})
+# # def crop_image(request):
+# #     form = forms.AvatarCropForm(user=request.user)
+# #     with Image.open(request.user.avatar.path) as image:
+# #         width, height = image.size
+# #         size = str(width), str(height)
+# #         if request.method == 'POST':
+# #             form = forms.AvatarCropForm(user=request.user, data=request.POST)
+# #             if form.is_valid():
+# #                 box = (int(form.cleaned_data['left']),
+# #                        int(form.cleaned_data['top']),
+# #                        int(form.cleaned_data['right']),
+# #                        int(form.cleaned_data['bottom']),
+# #                        )
+# #                 image = image.crop(box)
+# #                 image.save(request.user.avatar.path)
+# #                 return redirect('accounts:avatar_edit')
+# #         return render(request, 'accounts/avatar_edit.html',
+# #                       {'form': form, 'size': size})
