@@ -177,6 +177,10 @@ textarea {
     margin-bottom: 5px !important;
 }
 
+em {
+    color: #060606 !important;
+}
+
 textarea {
     border-radius: 25px;
 }

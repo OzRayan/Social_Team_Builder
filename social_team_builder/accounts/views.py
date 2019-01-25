@@ -3,7 +3,6 @@
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin as LrM
 from django.contrib.auth.tokens import default_token_generator
@@ -431,32 +430,17 @@ class AvatarEditView(LrM, TemplateView):
 class CropView(LrM, FormView):
     success_url = reverse_lazy("accounts:avatar_edit")
     template_name = "accounts/avatar_edit.html"
-    # model = get_user_model()
     form_class = forms.AvatarCropForm
 
-    # def get_object(self, queryset=None):
-    #     return self.request.user
-
-    # def get_form(self, form_class=None):
-    #     if form_class is None:
-    #         form_class = self.get_form_class()
-    #     return form_class(self.request, **self.get_form_kwargs())
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     # context['form'] = self.get_form()
-    #     with Image.open(self.request.user.avatar.path) as image:
-    #         width, height = image.size
-    #         size = str(width), str(height)
-    #
-    #     context['size'] = size
-    #     return context
-
-    # def form_valid(self, form):
-    #     return HttpResponseRedirect(self.get_success_url())
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        with Image.open(self.request.user.avatar.path) as image:
+            width, height = image.size
+            size = str(width), str(height)
+        context['size'] = size
+        return context
 
     def post(self, request, *args, **kwargs):
-        # form = forms.AvatarCropForm(request=request)
         with Image.open(request.user.avatar.path) as image:
             width, height = image.size
             size = str(width), str(height)
@@ -467,33 +451,12 @@ class CropView(LrM, FormView):
 
             if form.is_valid():
                 new = (int(form.cleaned_data['left']),
-                        int(form.cleaned_data['top']),
-                        int(form.cleaned_data['right']),
-                        int(form.cleaned_data['bottom']))
+                       int(form.cleaned_data['top']),
+                       int(form.cleaned_data['right']),
+                       int(form.cleaned_data['bottom']))
                 image = image.crop(new)
                 image.save(request.user.avatar.path)
                 # import pdb; pdb.set_trace()
                 return HttpResponseRedirect(reverse("accounts:avatar_edit"))
             return HttpResponseRedirect(reverse_lazy('accounts/avatar_edit.html',
-                                    {'form': form, 'size': size}))
-
-
-# @login_required
-# # def crop_image(request):
-# #     form = forms.AvatarCropForm(user=request.user)
-# #     with Image.open(request.user.avatar.path) as image:
-# #         width, height = image.size
-# #         size = str(width), str(height)
-# #         if request.method == 'POST':
-# #             form = forms.AvatarCropForm(user=request.user, data=request.POST)
-# #             if form.is_valid():
-# #                 box = (int(form.cleaned_data['left']),
-# #                        int(form.cleaned_data['top']),
-# #                        int(form.cleaned_data['right']),
-# #                        int(form.cleaned_data['bottom']),
-# #                        )
-# #                 image = image.crop(box)
-# #                 image.save(request.user.avatar.path)
-# #                 return redirect('accounts:avatar_edit')
-# #         return render(request, 'accounts/avatar_edit.html',
-# #                       {'form': form, 'size': size})
+                                        {'form': form}))

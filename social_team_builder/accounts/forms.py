@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
@@ -74,6 +75,11 @@ class AvatarCropForm(forms.Form):
         with Image.open(self.request.user.avatar.path) as avatar:
             width, height = avatar.size
 
+            # left = int(self.cleaned_data['left'])
+            # top = int(self.cleaned_data['top'])
+            # right = int(self.cleaned_data['right'])
+            # bottom = int(self.cleaned_data['bottom'])
+
             left = int(cleaned_data.get('left'))
             top = int(cleaned_data.get('top'))
             right = int(cleaned_data.get('right'))
@@ -82,11 +88,11 @@ class AvatarCropForm(forms.Form):
             max_left = width - right
             max_top = height - bottom
 
-            if left >= max_left or top >= max_top \
-                    or left >= width or top >= height or right > (width+1) or bottom > (height+1) \
-                    or left < 0 or top < 0 or right <= 0 or bottom <= 0:
-                # messages.error(self.request, "Unable to crop!")
-                raise forms.ValidationError("Unable to crop!")
+            if left >= max_left or top >= max_top or left >= width or top >= height \
+                    or right > width or bottom > height or left < 0 \
+                    or top < 0 or right <= 0 or bottom <= 0:
+                messages.error(self.request, "Unable to crop!")
+                raise forms.ValidationError("")
         return cleaned_data
 
 

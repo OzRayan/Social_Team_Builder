@@ -32,6 +32,7 @@ class PositionForm(forms.ModelForm):
         queryset=Skill.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
         required=False)
+    # import pdb; pdb.set_trace()
 
     class Media:
         css = {'all': ('css/order.css',)}

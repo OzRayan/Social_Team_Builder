@@ -22,11 +22,10 @@
             </div>
 
                 <div class="grid-100 d-flex justify-content-between">
+                    {% if size %}
 
                             <form method="post" enctype="multipart/form-data">
-                    {% if size %}
                             <h3>Size: {{ size }}</h3>
-                        {% endif %}
                             {% csrf_token %}
 
                             <div class="d-flex justify-content-between mt-5">
@@ -50,6 +49,7 @@
                                 <button type="submit" class="button nav_button">Apply</button>
                                 <a class="button nav_button" href="{% url 'accounts:profile' user.id %}">Back</a>
                             </form>
+                    {% endif %}
 
                 </div>
         {% else %}
