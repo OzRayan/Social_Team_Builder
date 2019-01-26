@@ -70,9 +70,10 @@
                 <label>Current avatar:</label>
                 <div class="card pr-auto" style="width: 30rem;">
                     {% if profile.avatar %}
-                    <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
+                        <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
                     {% else %}
-                    <img class="card-img-top" src="" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'images/avatar.png' %}"
+                     alt="Card image cap" height="220px" style="max-width: 167px;">
                     {% endif %}
                 </div>
                 <a class="button nav_button mt-5">Upload avatar

@@ -6,7 +6,9 @@ where others can apply, as them selves can apply at others projects.
 Each signed up user, after ***`email`*** verification, must continue the registration on their 
 own custom page where can showcase their talent, interests.
 Each project owner can accept or reject application from the application page.
-The application also reserves some extra features, which can be explored.
+The application also reserves some extra features. Unregistered user can
+explore the project list and project owners profile.
+
 
 The base project files was originally provided from <www.TeamTreehouse.com> for 
 Python Web Development Tech degree. Provided files are: HTML, CSS, JavaScript.

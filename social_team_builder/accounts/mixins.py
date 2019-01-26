@@ -1,4 +1,5 @@
-from django.contrib import messages
+# NOTE: # noinspection - prefixed comments are for pycharm editor only
+# for ignoring PEP 8 style highlights
 
 
 class PageTitleMixin:
@@ -11,12 +12,10 @@ class PageTitleMixin:
     page_title = ''
 
     def get_page_title(self):
-        """:return: - page_title"""
         return self.page_title
 
     def get_context_data(self, **kwargs):
-        """:return: - context data with page_title keyword"""
+        # noinspection PyUnresolvedReferences
         context = super().get_context_data(**kwargs)
         context['page_title'] = self.get_page_title()
         return context
-

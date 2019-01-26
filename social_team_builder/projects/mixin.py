@@ -1,3 +1,7 @@
+# NOTE: # noinspection - prefixed comments are for pycharm editor only
+# for ignoring PEP 8 style highlights
+
+
 class PageTitleMixin:
     """Page title mixin class
     - for class based views
@@ -11,8 +15,7 @@ class PageTitleMixin:
         return self.page_title
 
     def get_context_data(self, **kwargs):
+        # noinspection PyUnresolvedReferences
         context = super().get_context_data(**kwargs)
         context['page_title'] = self.get_page_title()
         return context
-
-

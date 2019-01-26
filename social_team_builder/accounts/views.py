@@ -382,6 +382,16 @@ class NotificationsView(LrM, TemplateView):
 
 
 class AvatarView(LrM, UpdateView):
+    """Avatar view - new avatar upload
+    :url:
+    ^accounts/profile/avatar/$
+
+    :inherit: - LrM (LoginRequiredMixin)
+              - generic.UpdateView
+    :methods: - get_object()
+              - get_context_data()
+              - post()
+    """
     form_class = forms.AvatarForm
     template_name = "accounts/avatar_edit.html"
     model = get_user_model()
@@ -406,6 +416,15 @@ class AvatarView(LrM, UpdateView):
 
 
 class AvatarEditView(LrM, TemplateView):
+    """Avatar edit view - rotate right-left, flip up-side
+    :url:
+    ^accounts/profile/avatar/edit/(?P<action>\w+)/$
+
+    :inherit: - LrM (LoginRequiredMixin)
+              - generic.TemplateView
+    :methods: - edit() - staticmethod
+              - get()
+    """
     template_name = "accounts/avatar_edit.html"
 
     @staticmethod
@@ -428,6 +447,15 @@ class AvatarEditView(LrM, TemplateView):
 
 
 class CropView(LrM, FormView):
+    """Crop view - cropping
+    :url:
+    ^accounts/profile/avatar/crop/$
+
+    :inherit: - LrM (LoginRequiredMixin)
+              - generic.FormView
+    :methods: - get_context_data()
+              - post()
+    """
     success_url = reverse_lazy("accounts:avatar_edit")
     template_name = "accounts/avatar_edit.html"
     form_class = forms.AvatarCropForm

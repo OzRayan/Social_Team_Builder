@@ -75,11 +75,6 @@ class AvatarCropForm(forms.Form):
         with Image.open(self.request.user.avatar.path) as avatar:
             width, height = avatar.size
 
-            # left = int(self.cleaned_data['left'])
-            # top = int(self.cleaned_data['top'])
-            # right = int(self.cleaned_data['right'])
-            # bottom = int(self.cleaned_data['bottom'])
-
             left = int(cleaned_data.get('left'))
             top = int(cleaned_data.get('top'))
             right = int(cleaned_data.get('right'))
