@@ -28,8 +28,9 @@ class PositionForm(forms.ModelForm):
                       forms.CheckboxSelectMultiple() widget
     """
     description = forms.Textarea(attrs={'cols': 28, 'rows': 6})
+    skills = Skill.objects.values_list('name', flat=True).distinct()
     skill = forms.ModelMultipleChoiceField(
-        queryset=Skill.objects.all(),
+        queryset=skills,
         widget=forms.CheckboxSelectMultiple(),
         required=False)
     # import pdb; pdb.set_trace()
