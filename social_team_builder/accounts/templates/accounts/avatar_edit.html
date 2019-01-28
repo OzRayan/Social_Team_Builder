@@ -30,19 +30,19 @@
 
                             <div class="d-flex justify-content-between mt-5">
                                 <div class="grid-20">
-                                    <h4>Left (0 - max):</h4>
+                                    <h4>L (0 <> {{ size.0 }}):</h4>
                                     <input name="left" type="text" required>
                                 </div>
                                 <div class="grid-20">
-                                    <h4>Top (0 - max):</h4>
+                                    <h4>T (0 <> {{ size.1 }}):</h4>
                                     <input name="top" type="text" required>
                                 </div>
                                 <div class="grid-20">
-                                    <h4>Right (0 - max):</h4>
+                                    <h4>R (({{ size.0 }} - L)  <> {{ size.0 }}):</h4>
                                     <input name="right" type="text" required>
                                 </div>
                                 <div class="grid-20">
-                                    <h4>Bottom (0 - max):</h4>
+                                    <h4>B (({{ size.1 }} - T) <> {{ size.1 }}):</h4>
                                     <input name="bottom" type="text" required>
                                 </div>
                             </div>
