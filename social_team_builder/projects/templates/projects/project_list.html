@@ -63,7 +63,7 @@
 
             <tbody>
                 {% for project in projects %}
-                <tr class="clickable-row" data-href="{% url 'projects:detail' project.pk %}">
+                <tr class="clickable-row" data-href="{% url 'projects:detail' project.id %}">
                         <td><h3 class="title d-flex justify-content-start">{{ project }}</h3></td>
                     <td class="circle--cell--right d-flex justify-content-end">
                         {% if project.positions.all %}

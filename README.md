@@ -29,6 +29,6 @@ for demonstration purpose.
 ## Requirements
 `requirements.txt`, python `3.5 +`
 ####  * For registration 
-***`sent_email`*** the `.log` file containing the registration username has the link
-copy/paste that link for activation.
+***`sent_email`*** the `.log` file containing the registration username has the link,
+copy/paste that link in the current browser where the app run for activation.
 

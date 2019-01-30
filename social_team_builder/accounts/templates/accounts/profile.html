@@ -46,7 +46,7 @@
             <tbody>
                 {% if past_projects %}
                     {% for pro in past_projects %}
-                        <tr class="clickable-row" data-href="project.html">
+                        <tr class="clickable-row" data-href="{% url 'projects:detail' pro.id %}">
                             <td><h3 class="my-button">{{ pro }}</h3></td>
                         </tr>
                     {% endfor %}
