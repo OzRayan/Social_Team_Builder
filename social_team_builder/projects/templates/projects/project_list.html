@@ -40,12 +40,12 @@
             <h4>Project Needs</h4>
             <ul class="circle--filter--list">
                 {% if positions_list %}
-                <li><a href="{% url 'projects:project_list' %}" {% if not selected %} class="selected"{% else %} class="my-button"{% endif %}>All Needs</a></li>
-                {% for position in positions_list %}
-                <li><a href="?filter={{ position.name }}"{% if selected == position.name %} class="selected"{% else %} class="my-button"{% endif %}>{{ position.name }}</a></li>
-                {% endfor %}
+                    <li><a href="{% url 'projects:project_list' %}" {% if not selected %} class="selected"{% else %} class="my-button"{% endif %}>All Needs</a></li>
+                    {% for position in positions_list %}
+                        <li><a href="?filter={{ position.name }}"{% if selected == position.name %} class="selected"{% else %} class="my-button"{% endif %}>{{ position.name }}</a></li>
+                    {% endfor %}
                 {% else %}
-                <li class="button-del">NO OPEN POSITIONS!</li>
+                    <li class="button-del">NO OPEN POSITIONS!</li>
                 {% endif %}
             </ul>
         </div>
@@ -69,10 +69,9 @@
                         {% if project.positions.all %}
                             <span class="secondary-label h4 pos">{{ project.positions.all|join:", " }}</span>
                         {% else %}
-                        <span class="secondary-label pos">No position for this project!</span>
+                            <span class="secondary-label pos">No position for this project!</span>
                         {% endif %}
                     </td>
-
                 </tr>
                 {% endfor %}
             </tbody>
