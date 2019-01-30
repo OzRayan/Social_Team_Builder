@@ -1,9 +1,7 @@
 {% extends "layout.html" %}
-
+{% load static %}
 {% block title %}Profile Edit | {{ block.super }}{% endblock %}
-
 {% block media %}{{ form.media }}{% endblock %}
-
 {% block content %}
 
 <div class="circle--actions--bar action-bar">
@@ -68,7 +66,7 @@
             <!-- Avatar -->
             <div class="circle--secondary--module">
                 <label>Current avatar:</label>
-                <div class="card pr-auto" style="width: 30rem;">
+                <div class="card pr-auto" style="max-width: 167px;">
                     {% if profile.avatar %}
                         <img class="card-img-top" src="{{ profile.avatar.url }}" alt="Card image cap">
                     {% else %}

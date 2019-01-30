@@ -114,8 +114,8 @@ class ProjectCreateView(LrM, CreateView):
             return HttpResponseRedirect(reverse_lazy("projects:detail",
                                                      kwargs={'pk': project.id}))
         else:
-            messages.error(request, 'Something went wrong')
-
+            messages.error(request, position_formset.errors)
+            # print("ERRORS: ", position_formset.errors)
         return HttpResponseRedirect(reverse('projects:create'))
 
 
@@ -181,7 +181,7 @@ class ProjectEditView(LrM, PtM, UpdateView):
         else:
             messages.error(request, 'Something went wrong')
 
-        return HttpResponseRedirect(reverse_lazy('accounts:edit'))
+        return HttpResponseRedirect(reverse_lazy('projects:edit'))
 
 
 class ProjectDetailView(PrM, DetailView):
