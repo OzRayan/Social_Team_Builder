@@ -1,17 +1,8 @@
 # Social Team Builder
 
-This web application serves the purpose for coders or non coders to search/find projects based on their skill-set.
-Users can sign up ( * registration requires ***`email`*** verification) and search or create their own projects with positions 
-where others can apply, as them selves can apply at others projects.
-Each signed up user, after ***`email`*** verification, must continue the registration on their 
-own custom page where can showcase their talent, interests.
-Each project owner can accept or reject application from the application page.
-The application also reserves some extra features. Unregistered user can
-explore the project list and project owners profile.
+This web application serves the purpose of coders or non-coders to search/find projects based on their skill-set. Users can sign up ( * registration requires email verification) and search or create their own projects with positions where others can apply, as themselves can apply at other projects. Each signed up user, after `email` verification, must continue the registration on their own custom page where can showcase their talent, interests. Each project owner can accept or reject an application from the application page. The application also reserves some extra features. An unregistered user can explore the project list and project owners profile.
 
-
-The base project files was originally provided from <www.TeamTreehouse.com> for 
-Python Web Development Tech degree. Provided files are: HTML, CSS, JavaScript.
+The base project files were originally provided from <www.TeamTreehouse.com> for Python Web Development Tech degree. Provided files are: HTML, CSS, JavaScript.
 
 ## For start,
 Create a virtual environment and install the `requirements.txt` with the following command
