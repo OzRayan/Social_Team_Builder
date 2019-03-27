@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'social_team_builder'
+
 urlpatterns = [
     url(r"signin/$", views.SignInView.as_view(), name="signin"),
     url(r"signout/$", views.SignOutView.as_view(), name="signout"),

@@ -3,6 +3,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'social_team_builder'
+
 urlpatterns = [
     url(r'^$', views.ProjectListView.as_view(), name='project_list'),
     url(r'project/new/$', views.ProjectCreateView.as_view(), name='create'),

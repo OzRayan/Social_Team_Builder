@@ -4,7 +4,8 @@ from django.contrib.auth.models import (
     PermissionsMixin
 )
 from django.conf import settings
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 
@@ -95,7 +96,7 @@ class Skill(models.Model):
     :fields: - user, name
     :methods: - __str__()
     """
-    user = models.ForeignKey(User, default='', related_name="profile_skills")
+    user = models.ForeignKey(User, default='', related_name="profile_skills", on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -126,6 +127,6 @@ class UserApplication(models.Model):
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   on_delete=models.CASCADE,
                                   related_name='application')
-    position = models.ForeignKey('projects.Position', related_name='apply')
-    project = models.ForeignKey('projects.Project', related_name='user_projects')
+    position = models.ForeignKey('projects.Position', related_name='apply', on_delete=models.CASCADE)
+    project = models.ForeignKey('projects.Project', related_name='user_projects', on_delete=models.CASCADE)
     status = models.NullBooleanField(default=None)
