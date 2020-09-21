@@ -2052,7 +2052,6 @@ input[type="email"].circle--input--h6, input[type="number"].circle--input--h6, i
   text-align: center;
   box-sizing: border-box;
   position: relative;
-  position: relative;
 }
 /* line 73, ../sass/circle/core/mixins.sass */
 .circle--primary--avatar:before {
